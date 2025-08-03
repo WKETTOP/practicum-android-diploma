@@ -7,7 +7,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.practicum.android.diploma.databinding.ActivityRootBinding
 
-
 class RootActivity : AppCompatActivity() {
 
     private var _binding: ActivityRootBinding? = null
