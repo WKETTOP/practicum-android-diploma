@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.databinding.FragmentChoosingIndustryBinding
 
-class ChoosingIndustryFragment() : Fragment() {
+class ChoosingIndustryFragment : Fragment() {
 
     private var _binding: FragmentChoosingIndustryBinding? = null
     private val binding get() = _binding!!
