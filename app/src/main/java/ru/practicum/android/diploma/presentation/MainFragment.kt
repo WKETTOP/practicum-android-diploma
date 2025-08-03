@@ -30,4 +30,9 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_mainFragment_to_settingsFilterFragment2)
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
