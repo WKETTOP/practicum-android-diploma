@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.databinding.FragmentChoosingIndustryBinding
 
 class ChoosingIndustryFragment() : Fragment() {
@@ -19,5 +20,13 @@ class ChoosingIndustryFragment() : Fragment() {
     ): View? {
         _binding = FragmentChoosingIndustryBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.applyButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }
