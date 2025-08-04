@@ -8,8 +8,10 @@ import java.util.concurrent.TimeUnit
 object NetworkClient {
 
     private const val BASE_URL = "https://practicum-diploma-8bc38133faba.herokuapp.com/"
+    private const val CONNECT_TIME = 30L
+    private const val READ_TIME = 30L
 
-    //Что бы проходить аунтификацию
+    // Для прохождения аутентификации
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val request = chain.request()
@@ -19,8 +21,8 @@ object NetworkClient {
                 .build()
             chain.proceed(request)
         }
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(CONNECT_TIME, TimeUnit.SECONDS)
+        .readTimeout(READ_TIME, TimeUnit.SECONDS)
         .build()
 
     private val client: Retrofit by lazy {
