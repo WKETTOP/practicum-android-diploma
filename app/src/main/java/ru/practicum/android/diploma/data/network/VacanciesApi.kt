@@ -9,7 +9,6 @@ import ru.practicum.android.diploma.data.network.models.ApiFilterIndustry
 import ru.practicum.android.diploma.data.network.models.ApiVacancyDetail
 import ru.practicum.android.diploma.data.network.models.ApiVacancySearchResponse
 
-
 interface VacanciesApi {
     @GET("/vacancies")
     suspend fun getVacancies(

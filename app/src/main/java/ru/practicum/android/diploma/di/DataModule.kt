@@ -8,7 +8,6 @@ import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.data.network.VacanciesApi
-import java.util.concurrent.TimeUnit
 
 val dataModule = module {
     single<VacanciesApi> {

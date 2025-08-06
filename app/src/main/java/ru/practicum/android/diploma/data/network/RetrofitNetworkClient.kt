@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import ru.practicum.android.diploma.data.dto.AreasRequest
 import ru.practicum.android.diploma.data.dto.IndustriesRequest
 import ru.practicum.android.diploma.data.dto.Response
@@ -37,6 +38,8 @@ class RetrofitNetworkClient(
                     is IndustriesRequest -> handleIndustriesRequest()
                     else -> Response().apply { resultCode = BAD_REQUEST }
                 }
+            } catch (e: HttpException) {
+                Response().apply { resultCode = e.code() }
             } catch (e: Exception) {
                 Response().apply { resultCode = SERVER_ERROR }
             }

@@ -23,7 +23,6 @@ import ru.practicum.android.diploma.domain.models.Schedule
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.models.VacancyResponse
 
-
 fun ApiVacancySearchResponse.toDomain(): VacancyResponse {
     return VacancyResponse(
         found = found,
@@ -32,7 +31,6 @@ fun ApiVacancySearchResponse.toDomain(): VacancyResponse {
         vacancies = items.map { it.toDomain() }
     )
 }
-
 
 fun ApiVacancyDetail.toDomain(): VacancyDetail {
     return VacancyDetail(

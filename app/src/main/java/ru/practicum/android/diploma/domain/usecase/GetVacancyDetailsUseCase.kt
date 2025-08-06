@@ -11,4 +11,3 @@ class GetVacancyDetailsUseCase(
         return repository.getVacancyDetails(id)
     }
 }
-
