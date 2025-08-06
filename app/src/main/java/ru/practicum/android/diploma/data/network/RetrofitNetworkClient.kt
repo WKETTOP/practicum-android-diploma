@@ -3,8 +3,11 @@ package ru.practicum.android.diploma.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
+import com.google.gson.JsonParseException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okio.IOException
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.dto.AreasRequest
 import ru.practicum.android.diploma.data.dto.IndustriesRequest
@@ -39,8 +42,16 @@ class RetrofitNetworkClient(
                     else -> Response().apply { resultCode = BAD_REQUEST }
                 }
             } catch (e: HttpException) {
+                Log.e("NetworkClient", "HTTP error: ${e.message}", e)
                 Response().apply { resultCode = e.code() }
+            } catch (e: IOException) {
+                Log.e("NetworkClient", "Network IO error: ${e.message}", e)
+                Response().apply { resultCode = SERVER_ERROR }
+            } catch (e: JsonParseException) {
+                Log.e("NetworkClient", "JSON parsing error: ${e.message}", e)
+                Response().apply { resultCode = SERVER_ERROR }
             } catch (e: Exception) {
+                Log.e("NetworkClient", "Unexpected error: ${e.message}", e)
                 Response().apply { resultCode = SERVER_ERROR }
             }
         }

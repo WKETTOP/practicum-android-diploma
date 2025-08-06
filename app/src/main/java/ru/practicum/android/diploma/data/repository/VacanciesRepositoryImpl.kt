@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.data.repository
 
+import android.util.Log
 import ru.practicum.android.diploma.data.dto.AreasRequest
 import ru.practicum.android.diploma.data.dto.IndustriesRequest
 import ru.practicum.android.diploma.data.dto.Response
@@ -14,6 +15,7 @@ import ru.practicum.android.diploma.data.network.models.ApiVacancyDetail
 import ru.practicum.android.diploma.data.network.models.ApiVacancySearchResponse
 import ru.practicum.android.diploma.domain.models.FilterArea
 import ru.practicum.android.diploma.domain.models.FilterIndustry
+import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.models.VacancyResponse
 import ru.practicum.android.diploma.domain.repository.VacanciesRepository
@@ -24,6 +26,7 @@ class VacanciesRepositoryImpl(
 ) : VacanciesRepository {
 
     companion object {
+        private const val TAG = "VacanciesRepositoryImpl"
         private const val NO_INTERNET_ERROR = "Нет интернет-соединения"
         private const val SERVER_ERROR = "Ошибка сервера"
         private const val DATA_FORMAT_ERROR = "Неверный формат данных"
@@ -32,15 +35,17 @@ class VacanciesRepositoryImpl(
     }
 
     override suspend fun searchVacancies(
-        area: Int?,
-        industry: Int?,
-        text: String?,
-        salary: Int?,
-        page: Int,
-        onlyWithSalary: Boolean
+        params: SearchParams
     ): Resource<VacancyResponse> {
         val response = networkClient.doRequest(
-            VacancySearchRequest(area, industry, text, salary, page, onlyWithSalary)
+            VacancySearchRequest(
+                area = params.area,
+                industry = params.industry,
+                text = params.text,
+                salary = params.salary,
+                page = params.page,
+                onlyWithSalary = params.onlyWithSalary
+            )
         )
 
         return when (response.resultCode) {
@@ -64,6 +69,7 @@ class VacanciesRepositoryImpl(
                 )
             } ?: Resource.Error(DATA_FORMAT_ERROR)
         } catch (e: ClassCastException) {
+            Log.e(TAG, "Ошибка приведения типа в processVacancySearchResponse", e)
             Resource.Error(DATA_FORMAT_ERROR)
         }
     }
@@ -85,6 +91,7 @@ class VacanciesRepositoryImpl(
                 Resource.Success(it.toDomain())
             } ?: Resource.Error(DATA_FORMAT_ERROR)
         } catch (e: ClassCastException) {
+            Log.e(TAG, "Ошибка приведения типа в processVacancyDetailResponse", e)
             Resource.Error(DATA_FORMAT_ERROR)
         }
     }
@@ -105,6 +112,7 @@ class VacanciesRepositoryImpl(
                 Resource.Success(it.map { area -> area.toDomain() })
             } ?: Resource.Error(DATA_FORMAT_ERROR)
         } catch (e: ClassCastException) {
+            Log.e(TAG, "Ошибка приведения типа в processAreasResponse", e)
             Resource.Error(DATA_FORMAT_ERROR)
         }
     }
@@ -125,6 +133,7 @@ class VacanciesRepositoryImpl(
                 Resource.Success(it.map { industry -> industry.toDomain() })
             } ?: Resource.Error(DATA_FORMAT_ERROR)
         } catch (e: ClassCastException) {
+            Log.e(TAG, "Ошибка приведения типа в processIndustriesResponse", e)
             Resource.Error(DATA_FORMAT_ERROR)
         }
     }
