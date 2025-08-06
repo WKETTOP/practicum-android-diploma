@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.data.network.models
+package ru.practicum.android.diploma.domain.models
 
 data class VacancyResponse(
     val found: Int,
