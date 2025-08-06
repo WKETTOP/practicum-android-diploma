@@ -16,7 +16,12 @@ class GetVacanciesUseCase(
         onlyWithSalary: Boolean
     ): Resource<VacancyResponse> {
         return repository.searchVacancies(
-            area, industry, text, salary, page, onlyWithSalary
+            area,
+            industry,
+            text,
+            salary,
+            page,
+            onlyWithSalary
         ) as Resource<VacancyResponse>
     }
 }
