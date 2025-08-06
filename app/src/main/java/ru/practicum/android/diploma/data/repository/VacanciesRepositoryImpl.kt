@@ -27,7 +27,7 @@ class VacanciesRepositoryImpl(
 
     companion object {
         private const val TAG = "VacanciesRepositoryImpl"
-        private const val NO_INTERNET_ERROR = "Нет интернет-соединения"
+        private const val NO_INTERNET_ERROR = "Нет подключения к интернету"
         private const val SERVER_ERROR = "Ошибка сервера"
         private const val DATA_FORMAT_ERROR = "Неверный формат данных"
         private const val VACANCY_NOT_FOUND = "Вакансия не найдена"
@@ -51,7 +51,7 @@ class VacanciesRepositoryImpl(
         return when (response.resultCode) {
             RetrofitNetworkClient.SUCCESS -> processVacancySearchResponse(response)
             RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(NO_INTERNET_ERROR)
-            else -> Resource.Error("$SERVER_ERROR: ${response.resultCode}")
+            else -> Resource.Error(SERVER_ERROR)
         }
     }
 
@@ -80,7 +80,7 @@ class VacanciesRepositoryImpl(
             RetrofitNetworkClient.SUCCESS -> processVacancyDetailResponse(response)
             BAD_REQUEST -> Resource.Error(VACANCY_NOT_FOUND)
             RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(NO_INTERNET_ERROR)
-            else -> Resource.Error("$SERVER_ERROR: ${response.resultCode}")
+            else -> Resource.Error(SERVER_ERROR)
         }
     }
 
@@ -101,7 +101,7 @@ class VacanciesRepositoryImpl(
         return when (response.resultCode) {
             RetrofitNetworkClient.SUCCESS -> processAreasResponse(response)
             RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(NO_INTERNET_ERROR)
-            else -> Resource.Error("$SERVER_ERROR: ${response.resultCode}")
+            else -> Resource.Error(SERVER_ERROR)
         }
     }
 
@@ -122,7 +122,7 @@ class VacanciesRepositoryImpl(
         return when (response.resultCode) {
             RetrofitNetworkClient.SUCCESS -> processIndustriesResponse(response)
             RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(NO_INTERNET_ERROR)
-            else -> Resource.Error("$SERVER_ERROR: ${response.resultCode}")
+            else -> Resource.Error(SERVER_ERROR)
         }
     }
 

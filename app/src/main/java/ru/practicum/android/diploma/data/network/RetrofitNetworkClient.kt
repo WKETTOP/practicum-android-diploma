@@ -21,6 +21,7 @@ class RetrofitNetworkClient(
 ) : NetworkClient {
 
     companion object {
+        private const val TAG = "NetworkClient"
         const val NO_INTERNET_CONNECTION = -1
         const val BAD_REQUEST = 400
         const val SUCCESS = 200
@@ -34,26 +35,27 @@ class RetrofitNetworkClient(
 
         return withContext(Dispatchers.IO) {
             try {
-                when (dto) {
-                    is VacancySearchRequest -> handleSearchRequest(dto)
-                    is VacancyDetailRequest -> handleDetailRequest(dto)
-                    is AreasRequest -> handleAreasRequest()
-                    is IndustriesRequest -> handleIndustriesRequest()
-                    else -> Response().apply { resultCode = BAD_REQUEST }
-                }
+                processRequest(dto)
             } catch (e: HttpException) {
-                Log.e("NetworkClient", "HTTP error: ${e.message}", e)
+                Log.e(TAG, "HTTP error: ${e.message}", e)
                 Response().apply { resultCode = e.code() }
             } catch (e: IOException) {
-                Log.e("NetworkClient", "Network IO error: ${e.message}", e)
+                Log.e(TAG, "Network IO error: ${e.message}", e)
                 Response().apply { resultCode = SERVER_ERROR }
             } catch (e: JsonParseException) {
-                Log.e("NetworkClient", "JSON parsing error: ${e.message}", e)
-                Response().apply { resultCode = SERVER_ERROR }
-            } catch (e: Exception) {
-                Log.e("NetworkClient", "Unexpected error: ${e.message}", e)
+                Log.e(TAG, "JSON parsing error: ${e.message}", e)
                 Response().apply { resultCode = SERVER_ERROR }
             }
+        }
+    }
+
+    private suspend fun processRequest(dto: Any): Response {
+        return when (dto) {
+            is VacancySearchRequest -> handleSearchRequest(dto)
+            is VacancyDetailRequest -> handleDetailRequest(dto)
+            is AreasRequest -> handleAreasRequest()
+            is IndustriesRequest -> handleIndustriesRequest()
+            else -> Response().apply { resultCode = BAD_REQUEST }
         }
     }
 
