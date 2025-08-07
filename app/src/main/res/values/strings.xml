@@ -32,5 +32,15 @@
     <string name="button_nav_main">Главная</string>
     <string name="button_nav_favorite">Избранное</string>
     <string name="button_nav_team">Команда</string>
+    <string name="text_found_vacancies_example">Найдено 286 вакансий</string>
+    <string name="text_job_vacancies_example">Android-разработчик, Москва</string>
+    <string name="text_company_vacancies_example">Еда</string>
+    <string name="text_payday_vacancies_example">от 100 000 ₽</string>
+    <plurals name="text_found_vacancies">
+        <item quantity="one">Найдена %d вакансия</item>
+        <item quantity="few">Найдено %d вакансии</item>
+        <item quantity="many">Найдено %d вакансий</item>
+        <item quantity="other">Найдено %d вакансий</item>
+    </plurals>
 
 </resources>
