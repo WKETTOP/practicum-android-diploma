@@ -26,8 +26,14 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.settingsFilterButton.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_settingsFilterFragment2)
+        binding.searchToolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.filter_button -> {
+                    findNavController().navigate(R.id.action_mainFragment_to_settingsFilterFragment2)
+                    true
+                }
+                else -> false
+            }
         }
     }
 
