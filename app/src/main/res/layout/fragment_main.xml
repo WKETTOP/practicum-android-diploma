@@ -87,8 +87,8 @@
         android:layout_marginTop="@dimen/margin_16"
         android:fontFamily="@font/ys_display_medium"
         android:textSize="@dimen/size_text_22"
-        tools:text="@string/placeholder_no_internet"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:text="@string/placeholder_no_internet" />
 
     <ProgressBar
         android:id="@+id/search_progress_bar"

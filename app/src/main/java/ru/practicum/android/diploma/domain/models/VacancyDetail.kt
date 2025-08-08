@@ -1,7 +1,7 @@
 package ru.practicum.android.diploma.domain.models
 
 data class VacancyDetail(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
     val salary: Salary?,

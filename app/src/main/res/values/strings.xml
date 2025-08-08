@@ -45,5 +45,16 @@
     <string name="text_team_title">Над приложением работали</string>
     <string name="text_team_bukus">Букус Даниил</string>
     <string name="text_team_petrusсhak">Петрущак Назар</string>
-
+    <string name="text_salary_not_specified">Зарплата не указана</string>
+    <string name="text_salary_from">от %1$d %2$s</string>
+    <style name="text_salary_to_string_placeholder"/>
+    <string name="text_salary_to">до %1$d %2$s</string>
+    <string name="text_salary_from_to">от %1$d до %2$d %3$s</string>
+    <string name="currency_rub">₽</string>
+    <string name="currcurrency_usd">$</string>
+    <string name="currency_eur">€</string>
+    <string name="currency_hkd">HK$</string>
+    <string name="currency_aud">A$</string>
+    <string name="currency_gbp">£</string>
+    <string name="currency_sgd">S$</string>
 </resources>
