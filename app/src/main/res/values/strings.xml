@@ -42,5 +42,8 @@
         <item quantity="many">Найдено %d вакансий</item>
         <item quantity="other">Найдено %d вакансий</item>
     </plurals>
+    <string name="text_team_title">Над приложением работали</string>
+    <string name="text_team_bukus">Букус Даниил</string>
+    <string name="text_team_petrusсhak">Петрущак Назар</string>
 
 </resources>
