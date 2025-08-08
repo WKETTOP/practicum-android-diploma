@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_settingsFilterFragment2"
-            app:destination="@id/settingsFilterFragment2" />
+            app:destination="@id/settingsFilterFragment2"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_mainFragment_to_vacancyFragment"
-            app:destination="@id/vacancyFragment" />
+            app:destination="@id/vacancyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
@@ -54,10 +62,18 @@
         tools:layout="@layout/fragment_choosing_place_work">
         <action
             android:id="@+id/action_choosingPlaceWorkFragment2_to_choosingCountryFragment"
-            app:destination="@id/choosingCountryFragment" />
+            app:destination="@id/choosingCountryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/hold"
+            app:popEnterAnim="@anim/hold"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_choosingPlaceWorkFragment2_to_choosingRegionFragment"
-            app:destination="@id/choosingRegionFragment" />
+            app:destination="@id/choosingRegionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/hold"
+            app:popEnterAnim="@anim/hold"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/settingsFilterFragment2"
@@ -66,9 +82,17 @@
         tools:layout="@layout/fragment_settings_filter">
         <action
             android:id="@+id/action_settingsFilterFragment2_to_choosingIndustryFragment"
-            app:destination="@id/choosingIndustryFragment" />
+            app:destination="@id/choosingIndustryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/hold"
+            app:popEnterAnim="@anim/hold"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFilterFragment2_to_choosingPlaceWorkFragment2"
-            app:destination="@id/choosingPlaceWorkFragment2" />
+            app:destination="@id/choosingPlaceWorkFragment2"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/hold"
+            app:popEnterAnim="@anim/hold"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 </navigation>
