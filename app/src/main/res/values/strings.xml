@@ -19,7 +19,7 @@
     <string name="hint_region">Регион</string>
     <string name="hint_enter_region">Введите регион</string>
     <string name="placeholder_no_internet">Нет интернета</string>
-    <string name="placeholder_unable_to_retrieve_job_listing">Не удалось получить список вакансий</string>
+    <string name="placeholder_unable_to_retrieve_job_listing">Не удалось получить\n&#160;&#160;&#160;&#160;&#160;список вакансий</string>
     <string name="placeholder_there_is_no_such_region">Такого региона нет</string>
     <string name="placeholder_failed_to_get_list">Не удалось получить список</string>
     <string name="placeholder_vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
@@ -45,10 +45,30 @@
     <string name="text_team_title">Над приложением работали</string>
     <string name="text_team_bukus">Букус Даниил</string>
     <string name="text_team_petrusсhak">Петрущак Назар</string>
+    <string name="text_salary_not_specified">Зарплата не указана</string>
+    <string name="text_salary_from">от %1$s %2$s</string>
+    <string name="text_salary_to">до %1$s %2$s</string>
+    <string name="text_salary_from_to">от %1$s до %2$s %3$s</string>
+    <string name="text_no_such_vacancy">Таких вакансий нет</string>
+    <string name="text_job_location_format">%1$s, %2$s</string>
+    <string name="currency_rub">₽</string>
+    <string name="currency_rur">₽</string>
+    <string name="currency_usd">$</string>
+    <string name="currency_eur">€</string>
+    <string name="currency_hkd">HK$</string>
+    <string name="currency_aud">A$</string>
+    <string name="currency_gbp">£</string>
+    <string name="currency_sgd">S$</string>
+    <string name="currency_byr">Br</string>
+    <string name="currency_kzt">₸</string>
+    <string name="currency_uah">₴</string>
+    <string name="currency_azn">₼</string>
+    <string name="currency_uzs">сум</string>
+    <string name="currency_gel">₾</string>
+    <string name="currency_kgt">с</string>
     <string name="error_no_internet">Нет подключения к интернету</string>
     <string name="error_server">Ошибка сервера</string>
     <string name="error_data_format">Неверный формат данных</string>
     <string name="error_vacancy_not_found">Вакансия не найдена</string>
     <string name="error_response_empty">Пустой ответ</string>
-
 </resources>

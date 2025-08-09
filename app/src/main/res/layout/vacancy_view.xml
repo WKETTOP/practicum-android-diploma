@@ -8,10 +8,9 @@
 
     <ImageView
         android:id="@+id/company_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="@dimen/margin_16"
-        android:layout_marginTop="@dimen/margin_9"
         tools:src="@drawable/company_logo_example" />
 
     <LinearLayout
@@ -39,6 +38,7 @@
         <TextView
             android:id="@+id/payday_vacancies_text"
             style="@style/VacancyTextStyle"
+            android:layout_marginBottom="@dimen/margin_16"
             tools:text="@string/text_payday_vacancies_example" />
     </LinearLayout>
 
