@@ -5,7 +5,7 @@ import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.models.VacancyResponse
-import ru.practicum.android.diploma.util.Resource
+import ru.practicum.android.diploma.domain.models.Resource
 
 interface VacanciesRepository {
     suspend fun searchVacancies(
