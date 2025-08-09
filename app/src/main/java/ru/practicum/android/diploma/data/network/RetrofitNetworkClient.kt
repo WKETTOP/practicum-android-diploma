@@ -18,7 +18,6 @@ class RetrofitNetworkClient(
         private const val TAG = "NetworkClient"
         const val NO_INTERNET_CONNECTION = -1
         const val SUCCESS = 200
-        const val NOT_FOUND = 404
         const val SERVER_ERROR = 500
     }
 
@@ -32,8 +31,7 @@ class RetrofitNetworkClient(
             if (response.isSuccessful && response.body() != null) {
                 Response(SUCCESS, response.body())
             } else {
-                val code = if (response.code() == 400) NOT_FOUND else response.code()
-                Response(code)
+                Response(response.code())
             }
         } catch (e: HttpException) {
             Log.e(TAG, "HTTP error: ${e.message}", e)
