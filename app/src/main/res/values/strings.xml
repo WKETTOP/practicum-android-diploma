@@ -45,5 +45,10 @@
     <string name="text_team_title">Над приложением работали</string>
     <string name="text_team_bukus">Букус Даниил</string>
     <string name="text_team_petrusсhak">Петрущак Назар</string>
+    <string name="error_no_internet">Нет подключения к интернету</string>
+    <string name="error_server">Ошибка сервера</string>
+    <string name="error_data_format">Неверный формат данных</string>
+    <string name="error_vacancy_not_found">Вакансия не найдена</string>
+    <string name="error_response_empty">Пустой ответ</string>
 
 </resources>

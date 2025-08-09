@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.util
+package ru.practicum.android.diploma.domain.models
 
 sealed class Resource<T>(
     val data: T? = null,
