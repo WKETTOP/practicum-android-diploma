@@ -75,7 +75,7 @@ class MainViewModel(
                             VacancySeatchUiState.Emty
                         }
                     } else {
-                        _uiState.value = VacancySeatchUiState.Error(null)
+                        _uiState.value = VacancySeatchUiState.Error("Ошибка сервера")
                     }
                 }
 

@@ -25,7 +25,11 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModel()
 
-    private lateinit var vacancyAdapter: VacancyAdapter
+    private val vacancyAdapter: VacancyAdapter by lazy {
+        VacancyAdapter { vacancy ->
+            onVacancyClick(vacancy)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,16 +56,13 @@ class MainFragment : Fragment() {
                     findNavController().navigate(R.id.action_mainFragment_to_settingsFilterFragment2)
                     true
                 }
+
                 else -> false
             }
         }
     }
 
     private fun setupRecyclerView() {
-        vacancyAdapter = VacancyAdapter { vacancy ->
-            onVacancyClick(vacancy)
-        }
-
         binding.searchResult.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = vacancyAdapter
@@ -70,14 +71,18 @@ class MainFragment : Fragment() {
 
     private fun setupSearchField() {
         binding.searchInputText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                // Не используется
+            }
 
             override fun beforeTextChanged(
                 s: CharSequence?,
                 start: Int,
                 count: Int,
                 after: Int
-            ) {}
+            ) {
+                // Не используется
+            }
 
             override fun onTextChanged(
                 s: CharSequence?,
@@ -120,15 +125,19 @@ class MainFragment : Fragment() {
             is VacancySeatchUiState.Idle -> {
                 showIdle()
             }
+
             is VacancySeatchUiState.Loading -> {
                 showLoading()
             }
+
             is VacancySeatchUiState.Content -> {
                 showContent(state)
             }
+
             is VacancySeatchUiState.Emty -> {
                 showEmpty()
             }
+
             is VacancySeatchUiState.Error -> {
                 showError(state.message)
             }
@@ -178,9 +187,44 @@ class MainFragment : Fragment() {
         vacancyAdapter.updateData(state.data.vacancies)
     }
 
-    private fun showEmpty() {}
+    private fun showEmpty() {
+        with(binding) {
+            searchProgressBar.isVisible = false
+            searchResult.isVisible = false
+            searchCountResult.isVisible = true
+            searchImage.isVisible = true
+            searchErrorText.isVisible = true
 
-    private fun showError(message: String?) {}
+            searchCountResult.text = getString(R.string.text_no_such_vacancy)
+            searchImage.setImageResource(R.drawable.not_find_vacancy_placeholder)
+            searchErrorText.text = getString(R.string.placeholder_unable_to_retrieve_job_listing)
+        }
+    }
+
+    private fun showError(message: String?) {
+        with(binding) {
+            searchProgressBar.isVisible = false
+            searchResult.isVisible = false
+            searchCountResult.isVisible = false
+            searchImage.isVisible = true
+            searchErrorText.isVisible = true
+
+            when (message) {
+                "Нет подключения к интернету" -> {
+                    searchImage.setImageResource(R.drawable.no_internet_placeholder)
+                    searchErrorText.text = getString(R.string.placeholder_no_internet)
+                }
+                "Ошибка сервера" -> {
+                    searchImage.setImageResource(R.drawable.server_error_placeholder)
+                    searchErrorText.text = getString(R.string.placeholder_server_error)
+                }
+                else -> {
+                    searchImage.setImageResource(R.drawable.not_find_vacancy_placeholder)
+                    searchErrorText.text = getString(R.string.placeholder_unable_to_retrieve_job_listing)
+                }
+            }
+        }
+    }
 
     private fun updateClearButtonVisibility(query: String) {
         binding.searchClearButton.isVisible = true
@@ -194,7 +238,9 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun onVacancyClick(vacancy: VacancyDetail) {}
+    private fun onVacancyClick(vacancy: VacancyDetail) {
+        findNavController().navigate(R.id.action_mainFragment_to_vacancyFragment)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

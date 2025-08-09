@@ -9,6 +9,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.util.CurrencyFormatter
+import ru.practicum.android.diploma.util.NumberFormatter
 
 class VacancyViewHolder(
     itemView: View
@@ -38,37 +40,27 @@ class VacancyViewHolder(
     }
 
     private fun formatSalary(salary: Salary?): String {
-        if (salary == null || (salary.from == null && salary.to == null)) {
+        if (salary == null || salary.from == null && salary.to == null) {
             return itemView.context.getString(R.string.text_salary_not_specified)
         }
 
-        val currency = getCurrencySymbol(salary.currency)
+        val currency = CurrencyFormatter.getCurrencySymbol(itemView.context,salary.currency)
         return when {
             salary.from != null && salary.to != null -> {
-                itemView.context.getString(R.string.text_salary_from_to, salary.from, salary.to, currency)
+                val from = NumberFormatter.formatSalary(salary.from)
+                val to = NumberFormatter.formatSalary(salary.to)
+                itemView.context.getString(R.string.text_salary_from_to, from, to, currency)
             }
 
             salary.from != null -> {
-                itemView.context.getString(R.string.text_salary_from, salary.from, currency)
+                val from = NumberFormatter.formatSalary(salary.from)
+                itemView.context.getString(R.string.text_salary_from, from, currency)
             }
 
             else -> {
-                itemView.context.getString(R.string.text_salary_to, salary.to, currency)
+                val to = NumberFormatter.formatSalary(salary.to)
+                itemView.context.getString(R.string.text_salary_to, to, currency)
             }
         }
     }
-
-    private fun getCurrencySymbol(currency: String): String {
-        return when (currency) {
-            "RUB" -> itemView.context.getString(R.string.currency_rub)
-            "USD" -> itemView.context.getString(R.string.currcurrency_usd)
-            "EUR" -> itemView.context.getString(R.string.currency_eur)
-            "HKD" -> itemView.context.getString(R.string.currency_hkd)
-            "AUD" -> itemView.context.getString(R.string.currency_aud)
-            "GBP" -> itemView.context.getString(R.string.currency_gbp)
-            "SGD" -> itemView.context.getString(R.string.currency_sgd)
-            else -> currency
-        }
-    }
-
 }
