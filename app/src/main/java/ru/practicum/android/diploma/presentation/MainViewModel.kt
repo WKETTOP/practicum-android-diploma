@@ -6,10 +6,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.usecase.GetVacanciesUseCase
 import ru.practicum.android.diploma.presentation.model.VacancySeatchUiState
-import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.util.debounce
 
 class MainViewModel(
