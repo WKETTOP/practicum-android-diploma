@@ -24,7 +24,7 @@ class VacanciesRepositoryImpl(
 
     companion object {
         const val TAG = "VacanciesRepository"
-        const val NOT_FOUND =  404
+        const val NOT_FOUND = 404
     }
 
     private val errorNoInternet = resourceProvider.getString(R.string.error_no_internet)
@@ -45,7 +45,8 @@ class VacanciesRepositoryImpl(
             )
         }
 
-        return handleResponse(response,
+        return handleResponse(
+            response,
             onSuccess = { apiResponse ->
                 Resource.Success(
                     VacancyResponse(
@@ -63,7 +64,8 @@ class VacanciesRepositoryImpl(
     override suspend fun getVacancyDetails(id: Int): Resource<VacancyDetail> {
         val response = networkClient.doRequest { vacanciesApi.getVacancyDetails(id) }
 
-        return handleResponse(response,
+        return handleResponse(
+            response,
             onSuccess = { apiResponse -> Resource.Success(apiResponse.toDomain()) },
             onNotFound = { Resource.Error(errorVacancyNotFound) }
         )
@@ -72,7 +74,8 @@ class VacanciesRepositoryImpl(
     override suspend fun getAreas(): Resource<List<FilterArea>> {
         val response = networkClient.doRequest { vacanciesApi.getAreas() }
 
-        return handleResponse(response,
+        return handleResponse(
+            response,
             onSuccess = { apiResponse ->
                 Resource.Success(apiResponse.map { it.toDomain() })
             }
@@ -82,7 +85,8 @@ class VacanciesRepositoryImpl(
     override suspend fun getIndustries(): Resource<List<FilterIndustry>> {
         val response = networkClient.doRequest { vacanciesApi.getIndustries() }
 
-        return handleResponse(response,
+        return handleResponse(
+            response,
             onSuccess = { apiResponse ->
                 Resource.Success(apiResponse.map { it.toDomain() })
             }
@@ -100,7 +104,7 @@ class VacanciesRepositoryImpl(
                 if (data != null) {
                     try {
                         onSuccess(data)
-                    } catch (e: Exception) {
+                    } catch (e: IllegalArgumentException) {
                         Log.e(TAG, errorDataFormat, e)
                         Resource.Error(errorDataFormat)
                     }

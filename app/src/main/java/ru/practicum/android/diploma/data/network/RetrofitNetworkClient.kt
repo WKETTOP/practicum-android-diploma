@@ -21,25 +21,28 @@ class RetrofitNetworkClient(
         const val SERVER_ERROR = 500
     }
 
-    override suspend fun <T> doRequest(requestCall: suspend () -> retrofit2.Response<T>): Response<T> {
-        if (!isConnected()) {
-            return Response(NO_INTERNET_CONNECTION)
-        }
-
-        return try {
-            val response = withContext(Dispatchers.IO) { requestCall() }
-            if (response.isSuccessful && response.body() != null) {
-                Response(SUCCESS, response.body())
-            } else {
-                Response(response.code())
+    override suspend fun <T> doRequest(
+        requestCall: suspend () -> retrofit2.Response<T>
+    ): Response<T> {
+        val result: Response<T> = if (!isConnected()) {
+            Response(NO_INTERNET_CONNECTION)
+        } else {
+            try {
+                val response = withContext(Dispatchers.IO) { requestCall() }
+                if (response.isSuccessful && response.body() != null) {
+                    Response(SUCCESS, response.body())
+                } else {
+                    Response(response.code())
+                }
+            } catch (e: HttpException) {
+                Log.e(TAG, "HTTP error: ${e.message}", e)
+                Response(e.code())
+            } catch (e: IOException) {
+                Log.e(TAG, "Network IO error: ${e.message}", e)
+                Response(SERVER_ERROR)
             }
-        } catch (e: HttpException) {
-            Log.e(TAG, "HTTP error: ${e.message}", e)
-            return Response(e.code())
-        } catch (e: IOException) {
-            Log.e(TAG, "Network IO error: ${e.message}", e)
-            Response(SERVER_ERROR)
         }
+        return result
     }
 
     private fun isConnected(): Boolean {
