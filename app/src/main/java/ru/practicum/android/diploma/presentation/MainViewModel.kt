@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.usecase.GetVacanciesUseCase
 import ru.practicum.android.diploma.presentation.model.VacancySeatchUiState
 import ru.practicum.android.diploma.domain.models.Resource
+import ru.practicum.android.diploma.util.debounce
 
 class MainViewModel(
     private val getVacanciesUseCase: GetVacanciesUseCase
@@ -23,7 +24,7 @@ class MainViewModel(
 
     private var currentJob: Job? = null
 
-    private val debouncedSearch = ru.practicum.android.diploma.util.debounce<String>(
+    private val debouncedSearch = debounce<String>(
         delayMillis = SEARCH_DEBOUNCE,
         coroutineScope = viewModelScope,
         useLastParam = true

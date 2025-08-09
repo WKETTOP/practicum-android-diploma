@@ -34,7 +34,11 @@ class VacancyViewHolder(
             )
             .into(companyLogo)
 
-        jobText.text = itemView.context.getString(R.string.text_job_location_format, vacancyDetail.name, vacancyDetail.area.name)
+        jobText.text = itemView.context.getString(
+            R.string.text_job_location_format,
+            vacancyDetail.name,
+            vacancyDetail.area.name
+        )
         companyText.text = vacancyDetail.employer.name
         paydayText.text = formatSalary(vacancyDetail.salary)
     }
