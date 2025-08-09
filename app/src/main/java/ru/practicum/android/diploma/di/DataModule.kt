@@ -6,8 +6,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.network.NetworkClient
+import ru.practicum.android.diploma.data.network.ResourceProvider
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.data.network.VacanciesApi
+import ru.practicum.android.diploma.data.repository.ResourceProviderImpl
+import ru.practicum.android.diploma.data.repository.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.domain.repository.VacanciesRepository
 
 val dataModule = module {
     single<VacanciesApi> {
@@ -30,6 +34,10 @@ val dataModule = module {
     }
 
     single<NetworkClient> {
-        RetrofitNetworkClient(androidContext(), get())
+        RetrofitNetworkClient(androidContext())
+    }
+
+    single<ResourceProvider> {
+        ResourceProviderImpl(androidContext())
     }
 }

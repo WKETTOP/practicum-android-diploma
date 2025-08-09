@@ -4,130 +4,49 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import com.google.gson.JsonParseException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.IOException
 import retrofit2.HttpException
-import ru.practicum.android.diploma.data.dto.AreasRequest
-import ru.practicum.android.diploma.data.dto.IndustriesRequest
 import ru.practicum.android.diploma.data.dto.Response
-import ru.practicum.android.diploma.data.dto.VacancyDetailRequest
-import ru.practicum.android.diploma.data.dto.VacancySearchRequest
 
 class RetrofitNetworkClient(
-    private val context: Context,
-    private val vacanciesApi: VacanciesApi
+    private val context: Context
 ) : NetworkClient {
 
     companion object {
         private const val TAG = "NetworkClient"
         const val NO_INTERNET_CONNECTION = -1
-        const val BAD_REQUEST = 400
         const val SUCCESS = 200
+        const val NOT_FOUND = 404
         const val SERVER_ERROR = 500
     }
 
-    override suspend fun doRequest(dto: Any): Response {
+    override suspend fun <T> doRequest(requestCall: suspend () -> retrofit2.Response<T>): Response<T> {
         if (!isConnected()) {
-            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+            return Response(NO_INTERNET_CONNECTION)
         }
 
-        return withContext(Dispatchers.IO) {
-            try {
-                processRequest(dto)
-            } catch (e: HttpException) {
-                Log.e(TAG, "HTTP error: ${e.message}", e)
-                Response().apply { resultCode = e.code() }
-            } catch (e: IOException) {
-                Log.e(TAG, "Network IO error: ${e.message}", e)
-                Response().apply { resultCode = SERVER_ERROR }
-            } catch (e: JsonParseException) {
-                Log.e(TAG, "JSON parsing error: ${e.message}", e)
-                Response().apply { resultCode = SERVER_ERROR }
+        return try {
+            val response = withContext(Dispatchers.IO) { requestCall() }
+            if (response.isSuccessful && response.body() != null) {
+                Response(SUCCESS, response.body())
+            } else {
+                val code = if (response.code() == 400) NOT_FOUND else response.code()
+                Response(code)
             }
-        }
-    }
-
-    private suspend fun processRequest(dto: Any): Response {
-        return when (dto) {
-            is VacancySearchRequest -> handleSearchRequest(dto)
-            is VacancyDetailRequest -> handleDetailRequest(dto)
-            is AreasRequest -> handleAreasRequest()
-            is IndustriesRequest -> handleIndustriesRequest()
-            else -> Response().apply { resultCode = BAD_REQUEST }
-        }
-    }
-
-    private suspend fun handleSearchRequest(request: VacancySearchRequest): Response {
-        val response = vacanciesApi.getVacancies(
-            area = request.area,
-            industry = request.industry,
-            text = request.text,
-            salary = request.salary,
-            page = request.page,
-            onlyWithSalary = request.onlyWithSalary
-        )
-
-        return if (response.isSuccessful && response.body() != null) {
-            Response().apply {
-                resultCode = SUCCESS
-                data = response.body()
-            }
-        } else {
-            Response().apply { resultCode = response.code() }
-        }
-    }
-
-    private suspend fun handleDetailRequest(request: VacancyDetailRequest): Response {
-        val response = vacanciesApi.getVacancyDetails(request.id)
-        return if (response.isSuccessful && response.body() != null) {
-            Response().apply {
-                resultCode = SUCCESS
-                data = response.body()!!
-            }
-        } else {
-            Response().apply { resultCode = response.code() }
-        }
-    }
-
-    private suspend fun handleAreasRequest(): Response {
-        val response = vacanciesApi.getAreas()
-        return if (response.isSuccessful && response.body() != null) {
-            Response().apply {
-                resultCode = SUCCESS
-                data = response.body()!!
-            }
-        } else {
-            Response().apply { resultCode = response.code() }
-        }
-    }
-
-    private suspend fun handleIndustriesRequest(): Response {
-        val response = vacanciesApi.getIndustries()
-        return if (response.isSuccessful && response.body() != null) {
-            Response().apply {
-                resultCode = SUCCESS
-                data = response.body()!!
-            }
-        } else {
-            Response().apply { resultCode = response.code() }
+        } catch (e: HttpException) {
+            Log.e(TAG, "HTTP error: ${e.message}", e)
+            return Response(e.code())
+        } catch (e: IOException) {
+            Log.e(TAG, "Network IO error: ${e.message}", e)
+            Response(SERVER_ERROR)
         }
     }
 
     private fun isConnected(): Boolean {
-        val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
-
-        val capabilities = connectivityManager.getNetworkCapabilities(
-            connectivityManager.activeNetwork
-        )
-
-        return capabilities?.run {
-            hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-        } ?: false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 }
