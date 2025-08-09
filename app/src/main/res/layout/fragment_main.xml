@@ -39,7 +39,7 @@
             android:inputType="text"
             android:maxLength="100"
             android:maxLines="1"
-            android:paddingStart="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_16"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="@color/gray"

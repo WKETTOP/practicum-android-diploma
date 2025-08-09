@@ -34,7 +34,7 @@ class VacancyViewHolder(
             )
             .into(companyLogo)
 
-        jobText.text = "${vacancyDetail.name}, ${vacancyDetail.area.name}"
+        jobText.text = itemView.context.getString(R.string.text_job_location_format, vacancyDetail.name, vacancyDetail.area.name)
         companyText.text = vacancyDetail.employer.name
         paydayText.text = formatSalary(vacancyDetail.salary)
     }
@@ -44,7 +44,7 @@ class VacancyViewHolder(
             return itemView.context.getString(R.string.text_salary_not_specified)
         }
 
-        val currency = CurrencyFormatter.getCurrencySymbol(itemView.context,salary.currency)
+        val currency = CurrencyFormatter.getCurrencySymbol(itemView.context, salary.currency)
         return when {
             salary.from != null && salary.to != null -> {
                 val from = NumberFormatter.formatSalary(salary.from)
