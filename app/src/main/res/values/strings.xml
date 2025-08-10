@@ -66,6 +66,8 @@
     <string name="currency_uzs">сум</string>
     <string name="currency_gel">₾</string>
     <string name="currency_kgt">с</string>
+    <string name="check_internet_connection">Проверьте подключение к интернету</string>
+    <string name="error_occurred">Произошла ошибка</string>
     <string name="error_no_internet">Нет подключения к интернету</string>
     <string name="error_server">Ошибка сервера</string>
     <string name="error_data_format">Неверный формат данных</string>
