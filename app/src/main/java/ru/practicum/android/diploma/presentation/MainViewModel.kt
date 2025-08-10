@@ -65,81 +65,109 @@ class MainViewModel(
 
     private fun performSearch(query: String, page: Int = 1) {
         if (query.isBlank()) return
-
         currentJob?.cancel()
 
+        setupInitialState(page)
+        lastQuery = query
+
+        currentJob = viewModelScope.launch {
+            val params = createSearchParams(query, page)
+            handleSearchResult(getVacanciesUseCase(params), page)
+        }
+    }
+
+    private fun setupInitialState(page: Int) {
         if (page == 1) {
             vacanciesList.clear()
             _uiState.value = VacancySearchUiState.Loading
         } else {
             isLoadingNextPage = true
             _uiState.value = VacancySearchUiState.PaginationLoading(
-                VacancyResponse(
-                    found = totalFound,
-                    pages = totalPages,
-                    page = currentPage,
-                    vacancies = vacanciesList
-                )
+                createVacancyResponse()
             )
         }
+    }
 
-        lastQuery = query
-        currentJob = viewModelScope.launch {
-            val params = SearchParams(
-                area = null,
-                industry = null,
-                text = query,
-                salary = null,
-                page = page,
-                onlyWithSalary = false
-            )
-            when (val res = getVacanciesUseCase(params)) {
-                is Resource.Success -> {
-                    val data = res.data
-                    if (data != null) {
-                        if (page == 1) {
-                            totalFound = data.found
-                        }
-                        currentPage = data.page
-                        totalPages = data.pages
+    private fun createSearchParams(query: String, page: Int): SearchParams {
+        return SearchParams(
+            area = null,
+            industry = null,
+            text = query,
+            salary = null,
+            page = page,
+            onlyWithSalary = false
+        )
+    }
 
-                        val newVacancies = data.vacancies.filterNot { v ->
-                            vacanciesList.any { it.id == v.id }
-                        }
-                        vacanciesList.addAll(newVacancies)
+    private fun handleSearchResult(result: Resource<VacancyResponse>, page: Int) {
+        when (result) {
+            is Resource.Success -> handleSuccess(result.data, page)
+            is Resource.Error -> handleError(result.message, page)
+            else -> Unit
+        }
+        isLoadingNextPage = false
+    }
 
-                        _uiState.value = if (vacanciesList.isNotEmpty()) {
-                            VacancySearchUiState.Content(
-                                data.copy(
-                                    found = totalFound,
-                                    vacancies = vacanciesList
-                                )
-                            )
-                        } else {
-                            VacancySearchUiState.Empty
-                        }
-                    } else {
-                        _uiState.value = VacancySearchUiState.Error("Ошибка сервера")
-                    }
-                }
-                is Resource.Error -> {
-                    if (page > 1) {
-                        _uiState.value = VacancySearchUiState.Content(
-                            VacancyResponse(
-                                found = totalFound,
-                                pages = totalPages,
-                                page = currentPage,
-                                vacancies = vacanciesList
-                            )
-                        )
-                        _toastMessage.tryEmit(res.message)
-                    } else {
-                        _uiState.value = VacancySearchUiState.Error(res.message)
-                    }
-                }
-                else -> Unit
-            }
-            isLoadingNextPage = false
+    private fun handleSuccess(data: VacancyResponse?, page: Int) {
+        if (data == null) {
+            _uiState.value = VacancySearchUiState.Error("Ошибка сервера")
+            return
+        }
+
+        updatePaginationData(data, page)
+        updateVacanciesList(data.vacancies)
+
+        _uiState.value = if (vacanciesList.isNotEmpty()) {
+            VacancySearchUiState.Content(createContentResponse(data))
+        } else {
+            VacancySearchUiState.Empty
+        }
+    }
+
+    private fun updatePaginationData(data: VacancyResponse, page: Int) {
+        if (page == 1) {
+            totalFound = data.found
+        }
+        currentPage = data.page
+        totalPages = data.pages
+    }
+
+    private fun updateVacanciesList(newVacancies: List<VacancyDetail>) {
+        val uniqueVacancies = newVacancies.filterNot { v ->
+            vacanciesList.any { it.id == v.id }
+        }
+        vacanciesList.addAll(uniqueVacancies)
+    }
+
+    private fun createContentResponse(data: VacancyResponse): VacancyResponse {
+        return data.copy(
+            found = totalFound,
+            vacancies = vacanciesList
+        )
+    }
+
+    private fun handleError(message: String?, page: Int) {
+        if (page > 1) {
+            _uiState.value = VacancySearchUiState.Content(createVacancyResponse())
+            _toastMessage.tryEmit(getErrorMessage(message))
+        } else {
+            _uiState.value = VacancySearchUiState.Error(message)
+        }
+    }
+
+    private fun createVacancyResponse(): VacancyResponse {
+        return VacancyResponse(
+            found = totalFound,
+            pages = totalPages,
+            page = currentPage,
+            vacancies = vacanciesList
+        )
+    }
+
+    private fun getErrorMessage(message: String?): String {
+        return when (message) {
+            "Нет подключения к интернету" -> "Проверьте подключение к интернету"
+            else -> "Произошла ошибка"
         }
     }
 
