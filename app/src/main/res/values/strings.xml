@@ -36,6 +36,14 @@
     <string name="text_job_vacancies_example">Android-разработчик, Москва</string>
     <string name="text_company_vacancies_example">Еда</string>
     <string name="text_payday_vacancies_example">от 100 000 ₽</string>
+    <string name="text_job_vacancies_example1">Android-разработчик</string>
+    <string name="text_required_experience_example">От 1 года до 3 лет</string>
+    <string name="text_type_employment_example">Полная занятость, Удаленная работа</string>
+    <string name="text_job_city_example">Москва</string>
+    <string name="text_responsibilities_example">• Разрабатывать новую функциональность приложения\n• Помогать с интеграцией нашего SDK в другие приложенияПроектировать большие новые модули\n• Писать UI- и unit-тесты\n• Следить за работоспособностью сервиса и устранять технический долг</string>
+    <string name="text_requirements_example">• 100% Kotlin\n• WebRTC\n• CI по модели Trunk Based Development</string>
+    <string name="text_conditions_example">• сильная команда, с которой можно расти\n• возможность влиять на процесс и результат\n• расширенная программа ДМС:\n стоматология, обследования, вызов врача\n на дом и многое другое</string>
+    <string name="text_key_skills_example">• Знание классических алгоритмов и структуры данных\n• Программирование для Android больше одного года\n• Знание WebRTC</string>
     <plurals name="text_found_vacancies">
         <item quantity="one">Найдена %d вакансия</item>
         <item quantity="few">Найдено %d вакансии</item>
@@ -51,6 +59,12 @@
     <string name="text_salary_from_to">от %1$s до %2$s %3$s</string>
     <string name="text_no_such_vacancy">Таких вакансий нет</string>
     <string name="text_job_location_format">%1$s, %2$s</string>
+    <string name="text_required_experience">Требуемый опыт</string>
+    <string name="text_job_description">Описание вакансии</string>
+    <string name="text_responsibilities">Обязанности</string>
+    <string name="text_requirements">Требования</string>
+    <string name="text_conditions">Условия</string>
+    <string name="text_key_skills">Ключевые навыки</string>
     <string name="currency_rub">₽</string>
     <string name="currency_rur">₽</string>
     <string name="currency_usd">$</string>

@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isGone
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import ru.practicum.android.diploma.R
@@ -39,12 +40,36 @@ class RootActivity : AppCompatActivity() {
 
         binding.bottomNavView.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.vacancyFragment -> {
+                    binding.bottomNavView.isGone = true
+                    binding.elevation.isGone = true
+                }
+                else -> {
+                    if (binding.bottomNavView.isGone) {
+                        binding.root.postDelayed({
+                            binding.bottomNavView.isGone = false
+                            binding.elevation.isGone = false
+                        }, BOTTOM_NAV_VIEW_GONE_DELAY)
+                    } else {
+                        binding.bottomNavView.isGone = false
+                        binding.elevation.isGone = false
+                    }
+                }
+            }
+        }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root, null)
         _binding = null
+    }
+
+    companion object {
+        private const val BOTTOM_NAV_VIEW_GONE_DELAY = 200L
     }
 
 }
