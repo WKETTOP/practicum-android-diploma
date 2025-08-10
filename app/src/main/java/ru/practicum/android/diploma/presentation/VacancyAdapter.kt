@@ -8,7 +8,8 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 
 class VacancyAdapter(
-    private val onClick: (VacancyDetail) -> Unit
+    private val onClick: (VacancyDetail) -> Unit,
+    private val onDataUpdated: () -> Unit
 ) : RecyclerView.Adapter<VacancyViewHolder>() {
 
     private val vacancies = mutableListOf<VacancyDetail>()
@@ -30,6 +31,8 @@ class VacancyAdapter(
         vacancies.clear()
         vacancies.addAll(newItems)
         diff.dispatchUpdatesTo(this)
+
+        onDataUpdated()
     }
 
     fun clearData() {
@@ -37,19 +40,13 @@ class VacancyAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): VacancyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {
         return VacancyViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.vacancy_view, parent, false)
         )
     }
 
-    override fun onBindViewHolder(
-        holder: VacancyViewHolder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {
         holder.bind(vacancies[position], onClick)
     }
 

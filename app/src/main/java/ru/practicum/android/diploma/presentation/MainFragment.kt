@@ -6,17 +6,19 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentMainBinding
 import ru.practicum.android.diploma.domain.models.VacancyDetail
-import ru.practicum.android.diploma.presentation.model.VacancySeatchUiState
+import ru.practicum.android.diploma.presentation.model.VacancySearchUiState
 
 class MainFragment : Fragment() {
 
@@ -25,11 +27,14 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModel()
 
-    private val vacancyAdapter: VacancyAdapter by lazy {
-        VacancyAdapter { vacancy ->
+    private val vacancyAdapter = VacancyAdapter(
+        onClick = { vacancy ->
             onVacancyClick(vacancy)
+        },
+        onDataUpdated = {
+            binding.paginationProgressBar.isVisible = false
         }
-    }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +71,16 @@ class MainFragment : Fragment() {
         binding.searchResult.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = vacancyAdapter
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lm = recyclerView.layoutManager as LinearLayoutManager
+                    if (lm.findLastVisibleItemPosition() == vacancyAdapter.itemCount - 1) {
+                        viewModel.loadNextPage()
+                    }
+                }
+            })
         }
     }
 
@@ -118,30 +133,28 @@ class MainFragment : Fragment() {
                 updateClearButtonVisibility(query)
             }
         }
-    }
 
-    private fun handleUiState(state: VacancySeatchUiState) {
-        when (state) {
-            is VacancySeatchUiState.Idle -> {
-                showIdle()
-            }
-
-            is VacancySeatchUiState.Loading -> {
-                showLoading()
-            }
-
-            is VacancySeatchUiState.Content -> {
-                showContent(state)
-            }
-
-            is VacancySeatchUiState.Emty -> {
-                showEmpty()
-            }
-
-            is VacancySeatchUiState.Error -> {
-                showError(state.message)
+        lifecycleScope.launch {
+            viewModel.toastMessage.collect { msg ->
+                msg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
             }
         }
+    }
+
+    private fun handleUiState(state: VacancySearchUiState) {
+        when (state) {
+            is VacancySearchUiState.Idle -> showIdle()
+            is VacancySearchUiState.Loading -> showLoading()
+            is VacancySearchUiState.Content -> showContent(state)
+            is VacancySearchUiState.Empty -> showEmpty()
+            is VacancySearchUiState.Error -> showError(state.message)
+            is VacancySearchUiState.PaginationLoading -> showPaginationLoading(state)
+        }
+    }
+
+    private fun showPaginationLoading(state: VacancySearchUiState.PaginationLoading) {
+        showContent(VacancySearchUiState.Content(state.currentData))
+        binding.paginationProgressBar.isVisible = true
     }
 
     private fun showIdle() {
@@ -168,7 +181,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showContent(state: VacancySeatchUiState.Content) {
+    private fun showContent(state: VacancySearchUiState.Content) {
         with(binding) {
             searchProgressBar.isVisible = false
             searchResult.isVisible = true
