@@ -27,6 +27,4 @@ class VacancyViewModel(private val getVacancyDetailsUseCase: GetVacancyDetailsUs
             _isLoading.value = false
         }
     }
-
-
 }

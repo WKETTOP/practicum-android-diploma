@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,7 @@ import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.viewmodel.VacancyViewModel
 import ru.practicum.android.diploma.util.CurrencyFormatter
 import ru.practicum.android.diploma.util.NumberFormatter.formatSalary
-
+import ru.practicum.android.diploma.util.TextFormatter.formatToHtml
 
 class VacancyFragment : Fragment() {
     private var _binding: FragmentVacancyBinding? = null
@@ -108,39 +109,17 @@ class VacancyFragment : Fragment() {
             binding.descriptions.text = formatToHtml(vacancy.description)
 
             bindSkills(vacancy.skills)
+        } catch (e: NullPointerException) {
+            Log.e("VacancyFragment", "Null data in vacancy", e)
+            showVacancyError()
+        } catch (e: IllegalStateException) {
+            Log.e("VacancyFragment", "UI binding error", e)
+            showVacancyError()
         } catch (e: Exception) {
+            Log.e("VacancyFragment", "Unexpected error", e)
             showServerError()
         }
     }
-
-    fun formatToHtml(input: String): Spanned {
-        val html = StringBuilder()
-        val lines = input.lines().map { it.trim() }.filter { it.isNotEmpty() }
-        var previousWasHeader = false
-        val headerKeywords = listOf("О нас", "Задачи", "Для нас крайне важно")
-
-        for (line in lines) {
-            when {
-                line.endsWith(":") || headerKeywords.any { line.equals(it, ignoreCase = true) } -> {
-                    if (html.isNotEmpty()) {
-                        html.append("<br>\n")
-                    }
-                    html.append("<b>${line}</b><br>\n")
-                    previousWasHeader = true
-                }
-                previousWasHeader -> {
-                    html.append("<p>  • ${line.removePrefix("-").trim()}</p>\n")
-                }
-                else -> {
-                    html.append("$line<br>\n")
-                    previousWasHeader = false
-                }
-            }
-        }
-
-        return HtmlCompat.fromHtml(html.toString(), HtmlCompat.FROM_HTML_MODE_COMPACT)
-    }
-
 
     private fun bindContacts(contacts: Contacts?) {
         binding.contactsGroup.isVisible = contacts != null

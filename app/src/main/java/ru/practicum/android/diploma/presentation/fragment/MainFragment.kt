@@ -26,7 +26,7 @@ import ru.practicum.android.diploma.presentation.viewmodel.MainViewModel
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
+    private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModel()
 
