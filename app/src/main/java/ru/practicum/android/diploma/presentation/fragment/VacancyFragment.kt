@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -73,7 +71,6 @@ class VacancyFragment : Fragment() {
                     showLoading(false)
                     bindVacancyData(resource.data)
                 }
-
                 is Resource.Error -> {
                     showLoading(false)
                     showServerError()
@@ -109,15 +106,9 @@ class VacancyFragment : Fragment() {
             binding.descriptions.text = formatToHtml(vacancy.description)
 
             bindSkills(vacancy.skills)
-        } catch (e: NullPointerException) {
-            Log.e("VacancyFragment", "Null data in vacancy", e)
-            showVacancyError()
         } catch (e: IllegalStateException) {
             Log.e("VacancyFragment", "UI binding error", e)
             showVacancyError()
-        } catch (e: Exception) {
-            Log.e("VacancyFragment", "Unexpected error", e)
-            showServerError()
         }
     }
 
