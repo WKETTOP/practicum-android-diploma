@@ -1,192 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/vacancy_toolbar"
+        style="@style/ToolbarStyle"
+        app:menu="@menu/vacancy_ic_toolbar"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:title="@string/title_vacancy"
+        app:titleTextAppearance="@style/TitleStyle" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        tools:context="ru.practicum.android.diploma.presentation.VacancyFragment">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/vacancy_toolbar"
-            style="@style/ToolbarStyle"
-            app:menu="@menu/vacancy_ic_toolbar"
-            app:navigationIcon="@drawable/ic_arrow_back_24"
-            app:title="@string/title_vacancy"
-            app:titleTextAppearance="@style/TitleStyle" />
-
-        <TextView
-            android:id="@+id/vacancy_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
-            android:layout_marginTop="@dimen/margin_24"
-            android:fontFamily="@font/ys_display_bold"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_text_32"
-            tools:text="@string/text_job_vacancies_example1" />
-
-        <TextView
-            android:id="@+id/vacancy_salary"
-            style="@style/TitleStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
-            tools:text="@string/text_payday_vacancies_example" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
-            android:layout_marginTop="@dimen/margin_16"
-            android:background="@drawable/rounded_corners_search"
-            android:padding="@dimen/margin_16">
-
-            <ImageView
-                android:id="@+id/company_logo"
-                android:layout_width="@dimen/icon_size_48"
-                android:layout_height="@dimen/icon_size_48"
-                tools:src="@drawable/company_logo_example" />
-
-            <TextView
-                android:id="@+id/company_name"
-                style="@style/TitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                tools:text="@string/text_company_vacancies_example" />
-
-            <TextView
-                android:id="@+id/city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="26dp"
-                android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16"
-                tools:text="@string/text_job_city_example" />
-
-        </FrameLayout>
-
-        <TextView
-            style="@style/VacancyDetailTextStyle"
-            android:layout_marginTop="@dimen/margin_24"
-            android:fontFamily="@font/ys_display_medium"
-            android:text="@string/text_required_experience" />
-
-        <TextView
-            android:id="@+id/required_experience"
-            style="@style/VacancyDetailTextStyle"
-            android:fontFamily="@font/ys_display_regular"
-            android:text="@string/text_required_experience_example" />
-
-        <TextView
-            android:id="@+id/type_employment"
-            style="@style/VacancyDetailTextStyle"
-            android:layout_marginTop="@dimen/margin_8"
-            android:fontFamily="@font/ys_display_regular"
-            tools:text="@string/text_type_employment_example" />
-
-        <TextView
-            style="@style/TitleStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_16"
-            android:layout_marginTop="@dimen/margin_32"
-            android:text="@string/text_job_description" />
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <LinearLayout
-            android:id="@+id/responsibilities"
-            style="@style/VacancyDetailStyle">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            tools:context="ru.practicum.android.diploma.presentation.fragment.VacancyFragment">
+
 
             <TextView
+                android:id="@+id/vacancy_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_medium"
-                android:text="@string/text_responsibilities"
+                android:layout_marginHorizontal="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_24"
+                android:fontFamily="@font/ys_display_bold"
                 android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16" />
+                android:textSize="@dimen/size_text_32"
+                tools:text="@string/text_job_vacancies_example1" />
 
             <TextView
-                android:id="@+id/responsibilities_descriptions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16"
-                tools:text="@string/text_responsibilities_example" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/requirements"
-            style="@style/VacancyDetailStyle">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_medium"
-                android:text="@string/text_requirements"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16" />
-
-            <TextView
-                android:id="@+id/requirements_descriptions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16"
-                tools:text="@string/text_requirements_example" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/conditions"
-            style="@style/VacancyDetailStyle">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_medium"
-                android:text="@string/text_conditions"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16" />
-
-            <TextView
-                android:id="@+id/conditions_descriptions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16"
-                tools:text="@string/text_conditions_example" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/key_skills"
-            style="@style/VacancyDetailStyle">
-
-            <TextView
+                android:id="@+id/vacancy_salary"
                 style="@style/TitleStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/text_key_skills" />
+                android:layout_marginHorizontal="@dimen/margin_16"
+                tools:text="@string/text_payday_vacancies_example" />
 
-            <TextView
-                android:id="@+id/key_skills_descriptions"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_16"
                 android:layout_marginTop="@dimen/margin_16"
+                android:background="@drawable/rounded_corners_search"
+                android:padding="@dimen/margin_16">
+
+                <ImageView
+                    android:id="@+id/company_logo"
+                    android:layout_width="@dimen/icon_size_48"
+                    android:layout_height="@dimen/icon_size_48"
+                    tools:src="@drawable/company_logo_example" />
+
+                <TextView
+                    android:id="@+id/company_name"
+                    style="@style/TitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="56dp"
+                    tools:text="@string/text_company_vacancies_example" />
+
+                <TextView
+                    android:id="@+id/city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="26dp"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="@string/text_job_city_example" />
+
+            </FrameLayout>
+
+            <TextView
+                style="@style/VacancyDetailTextStyle"
+                android:layout_marginTop="@dimen/margin_24"
+                android:fontFamily="@font/ys_display_medium"
+                android:text="@string/text_required_experience" />
+
+            <TextView
+                android:id="@+id/required_experience"
+                style="@style/VacancyDetailTextStyle"
+                android:layout_marginTop="@dimen/margin_4"
                 android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_text_16"
-                tools:text="@string/text_key_skills_example" />
+                android:text="@string/text_required_experience_example" />
+
+            <TextView
+                android:id="@+id/type_employment"
+                style="@style/VacancyDetailTextStyle"
+                android:layout_marginTop="@dimen/margin_8"
+                android:fontFamily="@font/ys_display_regular"
+                tools:text="@string/text_type_employment_example" />
+
+            <TextView
+                style="@style/TitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_16"
+                android:layout_marginTop="@dimen/margin_32"
+                android:text="@string/text_job_description" />
+
+            <LinearLayout
+                android:id="@+id/descriptionsTitle"
+                style="@style/VacancyDetailStyle">
+
+                <TextView
+                    android:id="@+id/descriptions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="@string/text_responsibilities_example" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/key_skills"
+                style="@style/VacancyDetailStyle">
+
+                <TextView
+                    style="@style/TitleStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_key_skills" />
+
+                <TextView
+                    android:id="@+id/key_skills_descriptions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="@string/text_key_skills_example" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/contactsGroup"
+                style="@style/VacancyDetailStyle">
+
+                <TextView
+                    style="@style/TitleStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_contacts" />
+
+                <TextView
+                    android:id="@+id/contactsName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="- Андрей залупин" />
+
+                <TextView
+                    android:id="@+id/contactsEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="- nunu.27@mail.ru" />
+
+                <TextView
+                    android:id="@+id/contactsPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:layout_marginBottom="@dimen/margin_16"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_text_16"
+                    tools:text="+7 912 912 92 84" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/holder_error_vacancy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+
+        <ImageView
+            android:id="@+id/search_q"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/no_vacancy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/search_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/size_text_22"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_q"
+            tools:text="@string/no_vacancy_available" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/holder_error_server"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/search_q1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/error_vacancy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/search_error1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/size_text_22"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_q1"
+            tools:text="@string/placeholder_server_error" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

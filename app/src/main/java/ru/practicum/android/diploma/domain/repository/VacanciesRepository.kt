@@ -12,7 +12,7 @@ interface VacanciesRepository {
         params: SearchParams
     ): Resource<VacancyResponse>
 
-    suspend fun getVacancyDetails(id: Int): Resource<VacancyDetail>
+    suspend fun getVacancyDetails(id: String): Resource<VacancyDetail>
 
     suspend fun getAreas(): Resource<List<FilterArea>>
 

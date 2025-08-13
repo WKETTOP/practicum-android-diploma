@@ -87,4 +87,9 @@
     <string name="error_data_format">Неверный формат данных</string>
     <string name="error_vacancy_not_found">Вакансия не найдена</string>
     <string name="error_response_empty">Пустой ответ</string>
+    <string name="share_vacancy">Поделиться вакансией</string>
+    <string name="send_email">Отправить email</string>
+    <string name="title_contacts">Контакты</string>
+    <string name="no_data_available">Информация не указана</string>
+    <string name="no_vacancy_available">Вакансия не найдена или\nудалена</string>
 </resources>

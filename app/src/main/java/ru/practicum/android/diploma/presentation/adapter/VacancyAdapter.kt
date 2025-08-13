@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation
+package ru.practicum.android.diploma.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.presentation.viewholde.VacancyViewHolder
 
 class VacancyAdapter(
     private val onClick: (VacancyDetail) -> Unit,
@@ -47,7 +48,10 @@ class VacancyAdapter(
     }
 
     override fun onBindViewHolder(holder: VacancyViewHolder, position: Int) {
-        holder.bind(vacancies[position], onClick)
+        val vacancy = vacancies[position]
+        holder.bind(vacancy) { clickedVacancy ->
+            onClick(clickedVacancy)
+        }
     }
 
     override fun getItemCount(): Int = vacancies.size

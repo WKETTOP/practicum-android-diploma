@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation
+package ru.practicum.android.diploma.presentation.viewholde
 
 import android.view.View
 import android.widget.ImageView
@@ -41,6 +41,7 @@ class VacancyViewHolder(
         )
         companyText.text = vacancyDetail.employer.name
         paydayText.text = formatSalary(vacancyDetail.salary)
+        itemView.setOnClickListener { onClick(vacancyDetail) }
     }
 
     private fun formatSalary(salary: Salary?): String {

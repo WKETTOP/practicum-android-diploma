@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="ru.practicum.android.diploma.presentation.MainFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -27,37 +27,37 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="ru.practicum.android.diploma.presentation.FavoriteFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
         android:id="@+id/teamFragment"
-        android:name="ru.practicum.android.diploma.presentation.TeamFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.TeamFragment"
         android:label="fragment_team"
         tools:layout="@layout/fragment_team" />
     <fragment
         android:id="@+id/vacancyFragment"
-        android:name="ru.practicum.android.diploma.presentation.VacancyFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.VacancyFragment"
         android:label="fragment_vacancy"
         tools:layout="@layout/fragment_vacancy" />
     <fragment
         android:id="@+id/choosingCountryFragment"
-        android:name="ru.practicum.android.diploma.presentation.ChoosingCountryFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingCountryFragment"
         android:label="fragment_choosing_country"
         tools:layout="@layout/fragment_choosing_country" />
     <fragment
         android:id="@+id/choosingIndustryFragment"
-        android:name="ru.practicum.android.diploma.presentation.ChoosingIndustryFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingIndustryFragment"
         android:label="fragment_choosing_industry"
         tools:layout="@layout/fragment_choosing_industry" />
     <fragment
         android:id="@+id/choosingRegionFragment"
-        android:name="ru.practicum.android.diploma.presentation.ChoosingRegionFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingRegionFragment"
         android:label="fragment_choosing_region"
         tools:layout="@layout/fragment_choosing_region" />
     <fragment
         android:id="@+id/choosingPlaceWorkFragment2"
-        android:name="ru.practicum.android.diploma.presentation.ChoosingPlaceWorkFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingPlaceWorkFragment"
         android:label="fragment_choosing_place_work"
         tools:layout="@layout/fragment_choosing_place_work">
         <action
@@ -77,7 +77,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFilterFragment2"
-        android:name="ru.practicum.android.diploma.presentation.SettingsFilterFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.SettingsFilterFragment"
         android:label="fragment_settings_filter"
         tools:layout="@layout/fragment_settings_filter">
         <action

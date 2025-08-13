@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.domain.models.Resource
 class GetVacancyDetailsUseCase(
     private val repository: VacanciesRepository
 ) {
-    suspend operator fun invoke(id: Int): Resource<VacancyDetail> {
+    suspend operator fun invoke(id: String): Resource<VacancyDetail> {
         return repository.getVacancyDetails(id)
     }
 }
