@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation
+package ru.practicum.android.diploma.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,6 +38,8 @@ class MainViewModel(
     private val vacanciesList = mutableListOf<VacancyDetail>()
     private var totalFound = 0
 
+    private var cachedVacancyResponse: VacancyResponse? = null
+
     private val debouncedSearch = debounce<String>(
         delayMillis = SEARCH_DEBOUNCE,
         coroutineScope = viewModelScope,
@@ -47,11 +49,14 @@ class MainViewModel(
     }
 
     fun onSearchQueryChanged(query: String) {
+        if (query == lastQuery) return
+
         _searchQuery.value = query
 
         if (query.isBlank()) {
             currentJob?.cancel()
             _uiState.value = VacancySearchUiState.Idle
+            cachedVacancyResponse = null
         } else {
             debouncedSearch(query)
         }
@@ -72,7 +77,12 @@ class MainViewModel(
 
         currentJob = viewModelScope.launch {
             val params = createSearchParams(query, page)
-            handleSearchResult(getVacanciesUseCase(params), page)
+            val result = getVacanciesUseCase(params)
+            handleSearchResult(result, page)
+
+            if (result is Resource.Success) {
+                cachedVacancyResponse = createContentResponse(result.data!!)
+            }
         }
     }
 
@@ -106,6 +116,7 @@ class MainViewModel(
             else -> Unit
         }
         isLoadingNextPage = false
+        currentJob = null
     }
 
     private fun handleSuccess(data: VacancyResponse?, page: Int) {
@@ -147,9 +158,12 @@ class MainViewModel(
     }
 
     private fun handleError(message: String?, page: Int) {
+        viewModelScope.launch {
+            _toastMessage.emit(getErrorMessage(message))
+        }
+
         if (page > 1) {
             _uiState.value = VacancySearchUiState.Content(createVacancyResponse())
-            _toastMessage.tryEmit(getErrorMessage(message))
         } else {
             _uiState.value = VacancySearchUiState.Error(message)
         }
@@ -172,8 +186,17 @@ class MainViewModel(
     }
 
     fun loadNextPage() {
-        if (!isLoadingNextPage && currentPage < totalPages && !lastQuery.isNullOrBlank()) {
-            performSearch(lastQuery!!, currentPage + 1)
+        val query = lastQuery ?: return
+        if (!isLoadingNextPage && currentPage < totalPages && query.isNotBlank()) {
+            performSearch(query, currentPage + 1)
+        }
+    }
+
+    fun loadInitialDataIfNeeded() {
+        if (cachedVacancyResponse != null) {
+            _uiState.value = VacancySearchUiState.Content(cachedVacancyResponse!!)
+        } else {
+            _uiState.value = VacancySearchUiState.Idle
         }
     }
 

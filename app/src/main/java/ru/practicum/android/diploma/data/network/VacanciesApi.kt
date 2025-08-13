@@ -22,7 +22,7 @@ interface VacanciesApi {
     ): Response<ApiVacancySearchResponse>
 
     @GET("/vacancies/{id}")
-    suspend fun getVacancyDetails(@Path("id") id: Int): Response<ApiVacancyDetail>
+    suspend fun getVacancyDetails(@Path("id") id: String): Response<ApiVacancyDetail>
 
     @GET("/areas")
     suspend fun getAreas(): Response<List<ApiFilterArea>>

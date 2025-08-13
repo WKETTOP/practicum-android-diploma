@@ -1,15 +1,15 @@
-package ru.practicum.android.diploma.presentation
+package ru.practicum.android.diploma.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import ru.practicum.android.diploma.databinding.FragmentFavoriteBinding
+import ru.practicum.android.diploma.databinding.FragmentChoosingRegionBinding
 
-class FavoriteFragment : Fragment() {
+class ChoosingRegionFragment : Fragment() {
 
-    private var _binding: FragmentFavoriteBinding? = null
+    private var _binding: FragmentChoosingRegionBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class FavoriteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        _binding = FragmentChoosingRegionBinding.inflate(inflater, container, false)
         return binding.root
     }
 

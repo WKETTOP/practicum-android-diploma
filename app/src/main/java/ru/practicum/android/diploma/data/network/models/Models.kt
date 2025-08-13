@@ -58,8 +58,13 @@ data class ApiContacts(
     @SerializedName("id") val id: String?,
     @SerializedName("name") val name: String?,
     @SerializedName("email") val email: String?,
-    @SerializedName("phone") val phone: List<String>?
-)
+    @SerializedName("phones") val phones: List<ApiPhone>?
+) {
+    data class ApiPhone(
+        @SerializedName("comment") val comment: String?,
+        @SerializedName("formatted") val formatted: String
+    )
+}
 
 data class ApiEmployer(
     @SerializedName("id") val id: String,

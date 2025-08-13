@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation
+package ru.practicum.android.diploma.presentation.fragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -18,23 +19,27 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentMainBinding
 import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.presentation.adapter.VacancyAdapter
 import ru.practicum.android.diploma.presentation.model.VacancySearchUiState
+import ru.practicum.android.diploma.presentation.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
 
     private val viewModel: MainViewModel by viewModel()
 
     private val vacancyAdapter = VacancyAdapter(
         onClick = { vacancy ->
-            onVacancyClick(vacancy)
+            navigateToVacancyDetail(vacancy)
         },
         onDataUpdated = {
             binding.paginationProgressBar.isVisible = false
         }
     )
+
+    private var isProgrammaticChange = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +57,8 @@ class MainFragment : Fragment() {
         setupRecyclerView()
         setupSearchField()
         observeViewModel()
+
+        viewModel.loadInitialDataIfNeeded()
     }
 
     private fun setupUI() {
@@ -105,6 +112,8 @@ class MainFragment : Fragment() {
                 before: Int,
                 count: Int
             ) {
+                if (isProgrammaticChange) return
+
                 val query = s?.toString() ?: ""
                 viewModel.onSearchQueryChanged(query)
                 updateClearButtonVisibility(query)
@@ -250,9 +259,13 @@ class MainFragment : Fragment() {
             binding.searchClearButton.isEnabled = true
         }
     }
+    private fun navigateToVacancyDetail(vacancy: VacancyDetail) {
+        val args = bundleOf("VACANCY_ID" to vacancy.id)
 
-    private fun onVacancyClick(vacancy: VacancyDetail) {
-        findNavController().navigate(R.id.action_mainFragment_to_vacancyFragment)
+        findNavController().navigate(
+            R.id.action_mainFragment_to_vacancyFragment,
+            args
+        )
     }
 
     override fun onDestroyView() {

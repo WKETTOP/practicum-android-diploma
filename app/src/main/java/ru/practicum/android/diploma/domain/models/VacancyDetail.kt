@@ -38,8 +38,13 @@ data class Contacts(
     val id: String?,
     val name: String?,
     val email: String?,
-    val phone: List<String>?
-)
+    val phones: List<Phone>?
+) {
+    data class Phone(
+        val comment: String?,
+        val formatted: String
+    )
+}
 
 data class Employer(
     val id: String,

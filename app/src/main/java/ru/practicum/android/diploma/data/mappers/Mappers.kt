@@ -81,7 +81,17 @@ fun ApiEmployment.toDomain(): Employment {
 }
 
 fun ApiContacts.toDomain(): Contacts {
-    return Contacts(id, name, email, phone)
+    return Contacts(
+        id = id,
+        name = name,
+        email = email,
+        phones = phones?.map { phone ->
+            Contacts.Phone(
+                comment = phone.comment,
+                formatted = phone.formatted
+            )
+        }
+    )
 }
 
 fun ApiEmployer.toDomain(): Employer {

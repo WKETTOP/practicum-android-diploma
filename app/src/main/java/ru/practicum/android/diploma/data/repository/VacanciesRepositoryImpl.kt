@@ -61,7 +61,7 @@ class VacanciesRepositoryImpl(
         )
     }
 
-    override suspend fun getVacancyDetails(id: Int): Resource<VacancyDetail> {
+    override suspend fun getVacancyDetails(id: String): Resource<VacancyDetail> {
         val response = networkClient.doRequest { vacanciesApi.getVacancyDetails(id) }
 
         return handleResponse(
