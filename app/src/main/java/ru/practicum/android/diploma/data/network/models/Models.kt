@@ -10,7 +10,7 @@ data class ApiVacancySearchResponse(
 )
 
 data class ApiVacancyDetail(
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String,
     @SerializedName("salary") val salary: ApiSalary?,
@@ -58,8 +58,13 @@ data class ApiContacts(
     @SerializedName("id") val id: String?,
     @SerializedName("name") val name: String?,
     @SerializedName("email") val email: String?,
-    @SerializedName("phone") val phone: List<String>?
-)
+    @SerializedName("phones") val phones: List<ApiPhone>?
+) {
+    data class ApiPhone(
+        @SerializedName("comment") val comment: String?,
+        @SerializedName("formatted") val formatted: String
+    )
+}
 
 data class ApiEmployer(
     @SerializedName("id") val id: String,
