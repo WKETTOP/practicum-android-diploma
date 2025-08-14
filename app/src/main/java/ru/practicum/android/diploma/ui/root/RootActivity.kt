@@ -42,7 +42,7 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.vacancyFragment -> {
+                R.id.vacancyFragment, R.id.settingsFilterFragment2 -> {
                     binding.bottomNavView.isGone = true
                     binding.elevation.isGone = true
                 }
