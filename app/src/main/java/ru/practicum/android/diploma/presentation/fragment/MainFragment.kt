@@ -141,7 +141,6 @@ class MainFragment : Fragment() {
         }
     }
 
-
     private fun showPaginationLoading(state: VacancySearchUiState.PaginationLoading) {
         showContent(VacancySearchUiState.Content(state.currentData))
         binding.paginationProgressBar.isVisible = true
