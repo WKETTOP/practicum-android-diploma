@@ -1,10 +1,8 @@
 package ru.practicum.android.diploma.presentation.fragment
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +27,10 @@ class VacancyFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: VacancyViewModel by viewModel()
 
+    companion object {
+        const val KEY = "VACANCY_ID"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,7 +45,7 @@ class VacancyFragment : Fragment() {
 
         setupToolbar()
         observeViewModel()
-        arguments?.getString("VACANCY_ID")?.let { viewModel.loadVacancy(it) }
+        arguments?.getString(KEY)?.let { viewModel.loadVacancy(it) }
     }
 
     private fun setupToolbar() {
@@ -71,6 +73,7 @@ class VacancyFragment : Fragment() {
                     showLoading(false)
                     bindVacancyData(resource.data)
                 }
+
                 is Resource.Error -> {
                     showLoading(false)
                     showServerError()
@@ -79,37 +82,32 @@ class VacancyFragment : Fragment() {
         }
     }
 
-    @SuppressLint("StringFormatInvalid")
     private fun bindVacancyData(vacancy: VacancyDetail?) {
         if (vacancy == null) {
             showVacancyError()
             return
         }
 
-        try {
-            binding.vacancyTitle.text = vacancy.name
+        binding.vacancyTitle.text = vacancy.name
 
-            binding.vacancySalary.text = formatSalary(vacancy.salary)
+        binding.vacancySalary.text = formatSalary(vacancy.salary)
 
-            binding.companyName.text = vacancy.employer.name
+        binding.companyName.text = vacancy.employer.name
 
-            binding.city.text = vacancy.address?.fullAddress ?: vacancy.area.name
+        binding.city.text = vacancy.address?.fullAddress ?: vacancy.area.name
 
-            loadCompanyLogo(vacancy.employer.logo)
+        loadCompanyLogo(vacancy.employer.logo)
 
-            binding.requiredExperience.text = vacancy.experience.name
+        binding.requiredExperience.text = vacancy.experience.name
 
-            binding.typeEmployment.text = "${vacancy.employment.name}, ${vacancy.schedule.name}"
+        binding.typeEmployment.text = "${vacancy.employment.name}, ${vacancy.schedule.name}"
 
-            bindContacts(vacancy.contacts)
+        bindContacts(vacancy.contacts)
 
-            binding.descriptions.text = formatToHtml(vacancy.description)
+        binding.descriptions.text = formatToHtml(vacancy.description)
 
-            bindSkills(vacancy.skills)
-        } catch (e: IllegalStateException) {
-            Log.e("VacancyFragment", "UI binding error", e)
-            showVacancyError()
-        }
+        bindSkills(vacancy.skills)
+
     }
 
     private fun bindContacts(contacts: Contacts?) {
@@ -158,19 +156,22 @@ class VacancyFragment : Fragment() {
             salary.from != null && salary.to != null -> {
                 val formattedFrom = formatSalary(salary.from)
                 val formattedTo = formatSalary(salary.to)
-                val currency = CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
+                val currency =
+                    CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
                 getString(R.string.text_salary_from_to, formattedFrom, formattedTo, currency)
             }
 
             salary.from != null -> {
                 val formattedFrom = formatSalary(salary.from)
-                val currency = CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
+                val currency =
+                    CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
                 getString(R.string.text_salary_from, formattedFrom, currency)
             }
 
             salary.to != null -> {
                 val formattedTo = formatSalary(salary.to)
-                val currency = CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
+                val currency =
+                    CurrencyFormatter.getCurrencySymbol(requireContext(), salary.currency)
                 getString(R.string.text_salary_to, formattedTo, currency)
             }
 
@@ -225,6 +226,7 @@ class VacancyFragment : Fragment() {
         binding.vacancyToolbar.menu.findItem(R.id.share_button).isVisible = false
         binding.vacancyToolbar.menu.findItem(R.id.filter_button).isVisible = false
     }
+
     private fun showServerError() {
         binding.searchProgressBar.isVisible = false
         binding.scrollView.isVisible = false

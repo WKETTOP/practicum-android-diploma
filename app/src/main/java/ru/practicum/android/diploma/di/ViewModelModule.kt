@@ -8,7 +8,7 @@ import ru.practicum.android.diploma.presentation.viewmodel.VacancyViewModel
 val viewModelModule = module {
 
     viewModel {
-        MainViewModel(get())
+        MainViewModel(get(),get())
     }
 
     viewModel {

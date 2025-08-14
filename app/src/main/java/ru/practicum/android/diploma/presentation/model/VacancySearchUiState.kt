@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.presentation.model
 
+import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.VacancyResponse
 
 sealed interface VacancySearchUiState {
@@ -10,7 +11,7 @@ sealed interface VacancySearchUiState {
 
     data class Content(val data: VacancyResponse) : VacancySearchUiState
 
-    data class Error(val message: String?) : VacancySearchUiState
+    data class Error(val errorType: ErrorType) : VacancySearchUiState
 
     data object Empty : VacancySearchUiState
 

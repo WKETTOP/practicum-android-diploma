@@ -1,13 +1,12 @@
 package ru.practicum.android.diploma.data.repository
 
 import android.util.Log
-import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.data.dto.Response
 import ru.practicum.android.diploma.data.mappers.toDomain
 import ru.practicum.android.diploma.data.network.NetworkClient
-import ru.practicum.android.diploma.data.network.ResourceProvider
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.data.network.VacanciesApi
+import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.FilterArea
 import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.domain.models.Resource
@@ -19,19 +18,12 @@ import ru.practicum.android.diploma.domain.repository.VacanciesRepository
 class VacanciesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val vacanciesApi: VacanciesApi,
-    private val resourceProvider: ResourceProvider
 ) : VacanciesRepository {
 
     companion object {
         const val TAG = "VacanciesRepository"
         const val NOT_FOUND = 404
     }
-
-    private val errorNoInternet = resourceProvider.getString(R.string.error_no_internet)
-    private val errorServer = resourceProvider.getString(R.string.error_server)
-    private val errorDataFormat = resourceProvider.getString(R.string.error_data_format)
-    private val errorVacancyNotFound = resourceProvider.getString(R.string.error_vacancy_not_found)
-    private val errorResponseEmpty = resourceProvider.getString(R.string.error_response_empty)
 
     override suspend fun searchVacancies(params: SearchParams): Resource<VacancyResponse> {
         val response = networkClient.doRequest {
@@ -57,7 +49,7 @@ class VacanciesRepositoryImpl(
                     )
                 )
             },
-            onNotFound = { Resource.Error(errorVacancyNotFound) }
+            onNotFound = { Resource.Error(ErrorType.NOT_FOUND) }
         )
     }
 
@@ -67,7 +59,7 @@ class VacanciesRepositoryImpl(
         return handleResponse(
             response,
             onSuccess = { apiResponse -> Resource.Success(apiResponse.toDomain()) },
-            onNotFound = { Resource.Error(errorVacancyNotFound) }
+            onNotFound = { Resource.Error(ErrorType.NOT_FOUND) }
         )
     }
 
@@ -105,16 +97,16 @@ class VacanciesRepositoryImpl(
                     try {
                         onSuccess(data)
                     } catch (e: IllegalArgumentException) {
-                        Log.e(TAG, errorDataFormat, e)
-                        Resource.Error(errorDataFormat)
+                        Log.e(TAG, "Data format error", e)
+                        Resource.Error(ErrorType.DATA_FORMAT_ERROR)
                     }
                 } else {
-                    Resource.Error(errorResponseEmpty)
+                    Resource.Error(ErrorType.EMPTY_RESPONSE)
                 }
             }
-            RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(errorNoInternet)
-            NOT_FOUND -> onNotFound?.invoke() ?: Resource.Error(errorResponseEmpty)
-            else -> Resource.Error(errorServer)
+            RetrofitNetworkClient.NO_INTERNET_CONNECTION -> Resource.Error(ErrorType.NO_INTERNET)
+            NOT_FOUND -> onNotFound?.invoke() ?: Resource.Error(ErrorType.EMPTY_RESPONSE)
+            else -> Resource.Error(ErrorType.SERVER_ERROR)
         }
     }
 }

@@ -9,7 +9,6 @@ val repositoryModule = module {
         VacanciesRepositoryImpl(
             networkClient = get(),
             vacanciesApi = get(),
-            resourceProvider = get()
         )
     }
 }
