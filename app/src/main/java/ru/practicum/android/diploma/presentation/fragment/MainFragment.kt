@@ -1,14 +1,13 @@
 package ru.practicum.android.diploma.presentation.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentMainBinding
+import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.adapter.VacancyAdapter
 import ru.practicum.android.diploma.presentation.model.VacancySearchUiState
@@ -39,7 +39,9 @@ class MainFragment : Fragment() {
         }
     )
 
-    private var isProgrammaticChange = false
+    companion object {
+        const val KEY = "VACANCY_ID"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,33 +94,11 @@ class MainFragment : Fragment() {
     }
 
     private fun setupSearchField() {
-        binding.searchInputText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Не используется
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-                // Не используется
-            }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                if (isProgrammaticChange) return
-
-                val query = s?.toString() ?: ""
-                viewModel.onSearchQueryChanged(query)
-                updateClearButtonVisibility(query)
-            }
-        })
+        binding.searchInputText.doOnTextChanged { text, _, _, _ ->
+            val query = text?.toString() ?: ""
+            viewModel.onSearchQueryChanged(query)
+            updateClearButtonVisibility(query)
+        }
 
         binding.searchClearButton.setOnClickListener {
             binding.searchInputText.setText("")
@@ -156,7 +136,7 @@ class MainFragment : Fragment() {
             is VacancySearchUiState.Loading -> showLoading()
             is VacancySearchUiState.Content -> showContent(state)
             is VacancySearchUiState.Empty -> showEmpty()
-            is VacancySearchUiState.Error -> showError(state.message)
+            is VacancySearchUiState.Error -> showError(state.errorType)
             is VacancySearchUiState.PaginationLoading -> showPaginationLoading(state)
         }
     }
@@ -223,7 +203,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showError(message: String?) {
+    private fun showError(errorType: ErrorType) {
         with(binding) {
             searchProgressBar.isVisible = false
             searchResult.isVisible = false
@@ -231,20 +211,23 @@ class MainFragment : Fragment() {
             searchImage.isVisible = true
             searchErrorText.isVisible = true
 
-            when (message) {
-                "Нет подключения к интернету" -> {
-                    searchImage.setImageResource(R.drawable.no_internet_placeholder)
-                    searchErrorText.text = getString(R.string.placeholder_no_internet)
-                }
-                "Ошибка сервера" -> {
-                    searchImage.setImageResource(R.drawable.server_error_placeholder)
-                    searchErrorText.text = getString(R.string.placeholder_server_error)
-                }
-                else -> {
-                    searchImage.setImageResource(R.drawable.not_find_vacancy_placeholder)
-                    searchErrorText.text = getString(R.string.placeholder_unable_to_retrieve_job_listing)
-                }
+            val (imageRes, textRes) = when (errorType) {
+                ErrorType.NO_INTERNET -> Pair(
+                    R.drawable.no_internet_placeholder,
+                    R.string.placeholder_no_internet
+                )
+                ErrorType.SERVER_ERROR -> Pair(
+                    R.drawable.server_error_placeholder,
+                    R.string.placeholder_server_error
+                )
+                else -> Pair(
+                    R.drawable.not_find_vacancy_placeholder,
+                    R.string.placeholder_unable_to_retrieve_job_listing
+                )
             }
+
+            searchImage.setImageResource(imageRes)
+            searchErrorText.setText(textRes)
         }
     }
 
@@ -259,8 +242,9 @@ class MainFragment : Fragment() {
             binding.searchClearButton.isEnabled = true
         }
     }
+
     private fun navigateToVacancyDetail(vacancy: VacancyDetail) {
-        val args = bundleOf("VACANCY_ID" to vacancy.id)
+        val args = bundleOf(KEY to vacancy.id)
 
         findNavController().navigate(
             R.id.action_mainFragment_to_vacancyFragment,

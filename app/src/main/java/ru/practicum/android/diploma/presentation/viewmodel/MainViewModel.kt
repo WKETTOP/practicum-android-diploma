@@ -8,19 +8,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.models.VacancyResponse
+import ru.practicum.android.diploma.domain.repository.ResourceProvider
 import ru.practicum.android.diploma.domain.usecase.GetVacanciesUseCase
 import ru.practicum.android.diploma.presentation.model.VacancySearchUiState
 import ru.practicum.android.diploma.util.debounce
 
 class MainViewModel(
+    private val resourceProvider: ResourceProvider,
     private val getVacanciesUseCase: GetVacanciesUseCase
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Idle)
+    private val _uiState = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Idle)
     val uiState: StateFlow<VacancySearchUiState> = _uiState
 
     private var _searchQuery = MutableStateFlow("")
@@ -112,7 +116,7 @@ class MainViewModel(
     private fun handleSearchResult(result: Resource<VacancyResponse>, page: Int) {
         when (result) {
             is Resource.Success -> handleSuccess(result.data, page)
-            is Resource.Error -> handleError(result.message, page)
+            is Resource.Error -> handleError(result.errorType ?: ErrorType.UNKNOWN, page)
             else -> Unit
         }
         isLoadingNextPage = false
@@ -121,7 +125,7 @@ class MainViewModel(
 
     private fun handleSuccess(data: VacancyResponse?, page: Int) {
         if (data == null) {
-            _uiState.value = VacancySearchUiState.Error("Ошибка сервера")
+            _uiState.value = VacancySearchUiState.Error(errorType = ErrorType.EMPTY_RESPONSE)
             return
         }
 
@@ -157,15 +161,12 @@ class MainViewModel(
         )
     }
 
-    private fun handleError(message: String?, page: Int) {
-        viewModelScope.launch {
-            _toastMessage.emit(getErrorMessage(message))
-        }
-
+    private fun handleError(type: ErrorType, page: Int) {
+        viewModelScope.launch { _toastMessage.emit(getErrorMessage(type)) }
         if (page > 1) {
             _uiState.value = VacancySearchUiState.Content(createVacancyResponse())
         } else {
-            _uiState.value = VacancySearchUiState.Error(message)
+            _uiState.value = VacancySearchUiState.Error(type)
         }
     }
 
@@ -178,10 +179,14 @@ class MainViewModel(
         )
     }
 
-    private fun getErrorMessage(message: String?): String {
-        return when (message) {
-            "Нет подключения к интернету" -> "Проверьте подключение к интернету"
-            else -> "Произошла ошибка"
+    private fun getErrorMessage(type: ErrorType): String {
+        return when (type) {
+            ErrorType.NO_INTERNET -> resourceProvider.getString(R.string.error_no_internet)
+            ErrorType.SERVER_ERROR -> resourceProvider.getString(R.string.error_server)
+            ErrorType.DATA_FORMAT_ERROR -> resourceProvider.getString(R.string.error_data_format)
+            ErrorType.NOT_FOUND -> resourceProvider.getString(R.string.error_vacancy_not_found)
+            ErrorType.EMPTY_RESPONSE -> resourceProvider.getString(R.string.error_response_empty)
+            ErrorType.UNKNOWN -> resourceProvider.getString(R.string.error_unnown)
         }
     }
 
