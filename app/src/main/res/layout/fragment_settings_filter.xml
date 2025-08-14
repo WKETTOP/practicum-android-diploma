@@ -1,52 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context="ru.practicum.android.diploma.presentation.fragment.SettingsFilterFragment">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/title_settings_filter"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settings_filter_toolbar"
+        style="@style/ToolbarStyle"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:title="@string/title_settings_filter"
+        app:titleTextAppearance="@style/TitleStyle" />
 
-    <Button
+    <FrameLayout
         android:id="@+id/place_work_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/blue"
-        android:text="@string/hint_place_of_work"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"/>
+        android:layout_marginTop="@dimen/margin_16"
+        android:background="@color/white">
 
-    <Button
+        <TextView
+            android:id="@+id/selected_place_text"
+            style="@style/SettingsFilterTextStyle"
+            android:layout_marginVertical="20.5dp"
+            android:text="@string/hint_place_of_work" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginVertical="@dimen/margin_18"
+            android:layout_marginEnd="@dimen/margin_8"
+            android:src="@drawable/ic_arrow_forward_24" />
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/industry_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hint_industry"
-        android:backgroundTint="@color/blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/place_work_button"/>
+        android:layout_marginTop="@dimen/margin_16"
+        android:background="@color/white">
 
-    <Button
+        <TextView
+            android:id="@+id/selected_industry_text"
+            style="@style/SettingsFilterTextStyle"
+            android:layout_marginVertical="20.5dp"
+            android:text="@string/hint_industry" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginVertical="@dimen/margin_18"
+            android:layout_marginEnd="@dimen/margin_8"
+            android:src="@drawable/ic_arrow_forward_24" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_24"
+        android:background="@drawable/rounded_corners_search">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_16"
+            android:text="@string/hint_title_expected_salary"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/size_text_12" />
+
+        <EditText
+            android:id="@+id/salary_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_marginTop="@dimen/margin_24"
+            android:layout_marginBottom="@dimen/margin_8"
+            android:background="@null"
+            android:ellipsize="end"
+            android:fontFamily="@font/ys_display_regular"
+            android:hint="@string/hint_enter_amount"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:paddingStart="@dimen/margin_16"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"
+            android:textCursorDrawable="@drawable/search_cursor_color"
+            android:textSize="@dimen/size_text_16" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_24">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="25dp"
+            android:layout_marginStart="@dimen/margin_16"
+            android:fontFamily="@font/ys_display_regular"
+            android:text="@string/text_hide_jobs_without_salary"
+            android:textColor="@color/black"
+            android:textSize="@dimen/size_text_16" />
+
+        <CheckBox
+            android:id="@+id/check_box_without_salary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginVertical="@dimen/margin_10"
+            app:buttonTint="@color/blue" />
+    </FrameLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/apply_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginHorizontal="@dimen/margin_17"
+        android:background="@drawable/rounded_corners_search_result"
+        android:fontFamily="@font/ys_display_medium"
         android:text="@string/button_apply"
-        android:backgroundTint="@color/blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/industry_button"/>
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_text_16" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/reset_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginHorizontal="@dimen/margin_17"
+        android:layout_marginTop="@dimen/margin_8"
+        android:layout_marginBottom="@dimen/margin_24"
+        android:fontFamily="@font/ys_display_medium"
+        android:text="@string/button_reset"
+        android:textAllCaps="false"
+        android:textColor="@color/red"
+        android:background="@color/white"
+        android:stateListAnimator="@null"
+        android:textSize="@dimen/size_text_16" />
+</LinearLayout>
