@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.interactor.FilterSettingsInteractor
 import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.domain.models.SearchParams
@@ -21,7 +22,8 @@ import ru.practicum.android.diploma.util.debounce
 
 class MainViewModel(
     private val resourceProvider: ResourceProvider,
-    private val getVacanciesUseCase: GetVacanciesUseCase
+    private val getVacanciesUseCase: GetVacanciesUseCase,
+    private val filterSettingsInteractor: FilterSettingsInteractor
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Idle)
@@ -32,6 +34,9 @@ class MainViewModel(
 
     private val _toastMessage = MutableSharedFlow<String?>(replay = 1)
     val toastMessage: SharedFlow<String?> = _toastMessage
+
+    private val _hasActiveFilters = MutableStateFlow(false)
+    val hasActiveFilters: StateFlow<Boolean> = _hasActiveFilters
 
     private var currentJob: Job? = null
 
@@ -44,6 +49,10 @@ class MainViewModel(
 
     private var cachedVacancyResponse: VacancyResponse? = null
 
+    init {
+        updateFilterState()
+    }
+
     private val debouncedSearch = debounce<String>(
         delayMillis = SEARCH_DEBOUNCE,
         coroutineScope = viewModelScope,
@@ -53,7 +62,7 @@ class MainViewModel(
     }
 
     fun onSearchQueryChanged(query: String) {
-        if (query == lastQuery) return
+        if (query == lastQuery && !hasActiveFilters()) return
 
         _searchQuery.value = query
 
@@ -79,6 +88,8 @@ class MainViewModel(
         setupInitialState(page)
         lastQuery = query
 
+        updateFilterState()
+
         currentJob = viewModelScope.launch {
             val params = createSearchParams(query, page)
             val result = getVacanciesUseCase(params)
@@ -88,6 +99,10 @@ class MainViewModel(
                 cachedVacancyResponse = createContentResponse(result.data!!)
             }
         }
+    }
+
+    private fun updateFilterState() {
+        _hasActiveFilters.value = filterSettingsInteractor.hasActiveFilters()
     }
 
     private fun setupInitialState(page: Int) {
@@ -103,13 +118,15 @@ class MainViewModel(
     }
 
     private fun createSearchParams(query: String, page: Int): SearchParams {
+        val filterParameters = filterSettingsInteractor.getFilterParameters()
+
         return SearchParams(
             area = null,
-            industry = null,
+            industry = filterParameters.industry?.id,
             text = query,
             salary = null,
             page = page,
-            onlyWithSalary = false
+            onlyWithSalary = filterParameters.onlyWithSalary
         )
     }
 
@@ -203,6 +220,10 @@ class MainViewModel(
         } else {
             _uiState.value = VacancySearchUiState.Idle
         }
+    }
+
+    fun hasActiveFilters(): Boolean {
+        return filterSettingsInteractor.hasActiveFilters()
     }
 
     companion object {

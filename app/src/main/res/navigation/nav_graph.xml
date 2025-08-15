@@ -77,7 +77,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFilterFragment2"
-        android:name="ru.practicum.android.diploma.presentation.fragment.SettingsFilterFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.FilterSettingsFragment"
         android:label="fragment_settings_filter"
         tools:layout="@layout/fragment_settings_filter">
         <action
