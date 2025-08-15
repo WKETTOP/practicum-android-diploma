@@ -74,6 +74,8 @@ class MainFragment : Fragment() {
                 else -> false
             }
         }
+
+        updateFilterButtonState()
     }
 
     private fun setupRecyclerView() {
@@ -106,14 +108,25 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun updateFilterButtonState(hasFilters: Boolean = viewModel.hasActiveFilters()) {
+        val menu = binding.searchToolbar.menu
+        val filterItem = menu.findItem(R.id.filter_button)
+
+        if (hasFilters) {
+            filterItem.setIcon(R.drawable.ic_filter_on_24)
+        } else {
+            filterItem.setIcon(R.drawable.ic_filter_off_24)
+        }
+    }
+
     private fun observeViewModel() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 handleUiState(state)
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.searchQuery.collect { query ->
                 if (binding.searchInputText.text.toString() != query) {
                     binding.searchInputText.setText(query)
@@ -123,9 +136,15 @@ class MainFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.toastMessage.collect { msg ->
                 msg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.hasActiveFilters.collect { hasFilters ->
+                updateFilterButtonState(hasFilters)
             }
         }
     }
@@ -250,6 +269,16 @@ class MainFragment : Fragment() {
             R.id.action_mainFragment_to_vacancyFragment,
             args
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateFilterButtonState()
+
+        val currentQuery = binding.searchInputText.text.toString()
+        if (currentQuery.isNotEmpty() && viewModel.hasActiveFilters()) {
+            viewModel.onSearchQueryChanged(currentQuery)
+        }
     }
 
     override fun onDestroyView() {

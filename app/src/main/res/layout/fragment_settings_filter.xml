@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="ru.practicum.android.diploma.presentation.fragment.SettingsFilterFragment">
+    tools:context="ru.practicum.android.diploma.presentation.fragment.FilterSettingsFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/settings_filter_toolbar"
@@ -114,7 +114,7 @@
             android:textSize="@dimen/size_text_16" />
 
         <CheckBox
-            android:id="@+id/check_box_without_salary"
+            android:id="@+id/check_only_with_salary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
