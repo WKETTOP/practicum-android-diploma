@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.domain.impl
 import ru.practicum.android.diploma.domain.interactor.FilterSettingsInteractor
 import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.domain.models.FilterParameters
+import ru.practicum.android.diploma.domain.models.hasActiveFilters
 import ru.practicum.android.diploma.domain.repository.FilterSettingsRepository
 
 class FilterSettingsInteractorImpl(
