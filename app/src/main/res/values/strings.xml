@@ -20,6 +20,8 @@
     <string name="hint_enter_region">Введите регион</string>
     <string name="placeholder_no_internet">Нет интернета</string>
     <string name="placeholder_unable_to_retrieve_job_listing">Не удалось получить\n&#160;&#160;&#160;&#160;&#160;список вакансий</string>
+    <string name="placeholder_no_industry">Такой отросли нету</string>
+    <string name="placeholder_list_is_empty">Не удалось получить\n&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;список</string>
     <string name="placeholder_there_is_no_such_region">Такого региона нет</string>
     <string name="placeholder_failed_to_get_list">Не удалось получить список</string>
     <string name="placeholder_vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
@@ -92,5 +94,5 @@
     <string name="send_email">Отправить email</string>
     <string name="title_contacts">Контакты</string>
     <string name="no_data_available">Информация не указана</string>
-    <string name="no_vacancy_available">Вакансия не найдена или\nудалена</string>
+    <string name="no_vacancy_available">Вакансия не найдена или\n&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;удалена</string>
 </resources>
