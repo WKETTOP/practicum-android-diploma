@@ -120,13 +120,13 @@ class MainFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 handleUiState(state)
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.searchQuery.collect { query ->
                 if (binding.searchInputText.text.toString() != query) {
                     binding.searchInputText.setText(query)
@@ -136,13 +136,13 @@ class MainFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.toastMessage.collect { msg ->
                 msg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.hasActiveFilters.collect { hasFilters ->
                 updateFilterButtonState(hasFilters)
             }

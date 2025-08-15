@@ -66,13 +66,13 @@ class FilterSettingsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 updateUI(state)
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.navigationEvent.collect { event ->
                 event?.let {
                     handleNavigationEvent(it)
