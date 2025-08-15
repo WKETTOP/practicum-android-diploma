@@ -39,6 +39,7 @@ class MainViewModel(
     val hasActiveFilters: StateFlow<Boolean> = _hasActiveFilters
 
     private var currentJob: Job? = null
+    private var cachedUiState: VacancySearchUiState? = null
 
     private var currentPage = 1
     private var totalPages = 1
@@ -70,6 +71,7 @@ class MainViewModel(
             currentJob?.cancel()
             _uiState.value = VacancySearchUiState.Idle
             cachedVacancyResponse = null
+            cachedUiState = null
         } else {
             debouncedSearch(query)
         }
@@ -79,6 +81,7 @@ class MainViewModel(
         _searchQuery.value = ""
         currentJob?.cancel()
         _uiState.value = VacancySearchUiState.Idle
+        cachedUiState = null
     }
 
     private fun performSearch(query: String, page: Int = 1) {
@@ -142,17 +145,25 @@ class MainViewModel(
 
     private fun handleSuccess(data: VacancyResponse?, page: Int) {
         if (data == null) {
-            _uiState.value = VacancySearchUiState.Error(errorType = ErrorType.EMPTY_RESPONSE)
+            val errorState = VacancySearchUiState.Error(errorType = ErrorType.EMPTY_RESPONSE)
+            _uiState.value = errorState
+            cachedUiState = errorState
             return
         }
 
         updatePaginationData(data, page)
         updateVacanciesList(data.vacancies)
 
-        _uiState.value = if (vacanciesList.isNotEmpty()) {
+        val newState = if (vacanciesList.isNotEmpty()) {
             VacancySearchUiState.Content(createContentResponse(data))
         } else {
             VacancySearchUiState.Empty
+        }
+
+        _uiState.value = newState
+
+        if (page == 1) {
+            cachedUiState = newState
         }
     }
 
@@ -180,10 +191,17 @@ class MainViewModel(
 
     private fun handleError(type: ErrorType, page: Int) {
         viewModelScope.launch { _toastMessage.emit(getErrorMessage(type)) }
-        if (page > 1) {
-            _uiState.value = VacancySearchUiState.Content(createVacancyResponse())
+
+        val newState = if (page > 1) {
+            VacancySearchUiState.Content(createVacancyResponse())
         } else {
-            _uiState.value = VacancySearchUiState.Error(type)
+            VacancySearchUiState.Error(type)
+        }
+
+        _uiState.value = newState
+
+        if (page == 1) {
+            cachedUiState = newState
         }
     }
 
@@ -215,9 +233,9 @@ class MainViewModel(
     }
 
     fun loadInitialDataIfNeeded() {
-        if (cachedVacancyResponse != null) {
-            _uiState.value = VacancySearchUiState.Content(cachedVacancyResponse!!)
-        } else {
+        cachedUiState?.let { state ->
+            _uiState.value = state
+        } ?: run {
             _uiState.value = VacancySearchUiState.Idle
         }
     }
