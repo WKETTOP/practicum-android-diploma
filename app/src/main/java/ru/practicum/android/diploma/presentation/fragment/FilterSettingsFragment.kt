@@ -66,7 +66,7 @@ class FilterSettingsFragment : Fragment() {
                 R.id.action_settingsFilterFragment2_to_choosingIndustryFragment,
                 null,
                 NavOptions.Builder()
-                    .setPopUpTo(R.id.settingsFilterFragment2, true)  // Удалить settingsFilterFragment2 из стека
+                    .setPopUpTo(R.id.settingsFilterFragment2, true)
                     .build()
             )
         }

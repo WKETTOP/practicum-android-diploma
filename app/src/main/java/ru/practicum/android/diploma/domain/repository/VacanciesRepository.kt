@@ -16,5 +16,5 @@ interface VacanciesRepository {
 
     suspend fun getAreas(): Resource<List<FilterArea>>
 
-    suspend fun getIndustries(query: String? = null): Resource<List<FilterIndustry>>
+    suspend fun getIndustries(): Resource<List<FilterIndustry>>
 }

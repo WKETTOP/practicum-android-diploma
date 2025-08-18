@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.domain.models.Resource
 class GetIndustriesUseCase(
     private val repository: VacanciesRepository
 ) {
-    suspend operator fun invoke(query: String? = null): Resource<List<FilterIndustry>> {
-        return repository.getIndustries(query)
+    suspend operator fun invoke(): Resource<List<FilterIndustry>> {
+        return repository.getIndustries()
     }
 }
