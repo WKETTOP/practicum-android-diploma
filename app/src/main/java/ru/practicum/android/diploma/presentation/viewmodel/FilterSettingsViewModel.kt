@@ -39,6 +39,11 @@ class FilterSettingsViewModel(
         )
     }
 
+    fun onIndustryCleared() {
+        filterSettingsInteractor.updateIndustry(null)
+        _uiState.value = _uiState.value.copy(selectedIndustry = null)
+    }
+
     fun onOnlyWithSalaryChanged(checked: Boolean) {
         filterSettingsInteractor.updateOnlyWithSalary(checked)
 

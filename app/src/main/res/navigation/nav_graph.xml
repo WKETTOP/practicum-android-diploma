@@ -49,7 +49,11 @@
         android:id="@+id/choosingIndustryFragment"
         android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingIndustryFragment"
         android:label="fragment_choosing_industry"
-        tools:layout="@layout/fragment_choosing_industry" />
+        tools:layout="@layout/fragment_choosing_industry" >
+        <action
+            android:id="@+id/action_choosingIndustryFragment_to_settingsFilterFragment2"
+            app:destination="@id/settingsFilterFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/choosingRegionFragment"
         android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingRegionFragment"

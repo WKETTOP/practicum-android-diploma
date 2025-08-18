@@ -28,5 +28,5 @@ interface VacanciesApi {
     suspend fun getAreas(): Response<List<ApiFilterArea>>
 
     @GET("/industries")
-    suspend fun getIndustries(): Response<List<ApiFilterIndustry>>
+    suspend fun getIndustries(@Query("query") query: String? = null): Response<List<ApiFilterIndustry>>
 }

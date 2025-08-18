@@ -74,8 +74,8 @@ class VacanciesRepositoryImpl(
         )
     }
 
-    override suspend fun getIndustries(): Resource<List<FilterIndustry>> {
-        val response = networkClient.doRequest { vacanciesApi.getIndustries() }
+    override suspend fun getIndustries(query: String?): Resource<List<FilterIndustry>> {
+        val response = networkClient.doRequest { vacanciesApi.getIndustries(query) }
 
         return handleResponse(
             response,

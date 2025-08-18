@@ -8,11 +8,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSettingsFilterBinding
+import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.presentation.model.FilterUiState
 import ru.practicum.android.diploma.presentation.viewmodel.FilterSettingsViewModel
 
@@ -37,6 +39,17 @@ class FilterSettingsFragment : Fragment() {
 
         setupUI()
         observeViewModel()
+        industrySelectedListener()
+    }
+
+    private fun industrySelectedListener() {
+        val industryId = arguments?.getInt(ChoosingIndustryFragment.KEY_ID)
+        val industryName = arguments?.getString(ChoosingIndustryFragment.KEY_NAME)
+
+        if (industryId != null && industryName != null) {
+            val selectedIndustry = FilterIndustry(industryId, industryName)
+            viewModel.onIndustrySelected(selectedIndustry)
+        }
     }
 
     private fun setupUI() {
@@ -49,7 +62,13 @@ class FilterSettingsFragment : Fragment() {
         }
 
         binding.industryButton.setOnClickListener {
-            findNavController().navigate(R.id.action_settingsFilterFragment2_to_choosingIndustryFragment)
+            findNavController().navigate(
+                R.id.action_settingsFilterFragment2_to_choosingIndustryFragment,
+                null,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.settingsFilterFragment2, true)  // Удалить settingsFilterFragment2 из стека
+                    .build()
+            )
         }
 
         binding.checkOnlyWithSalary.setOnCheckedChangeListener { _, isChecked ->
@@ -62,6 +81,10 @@ class FilterSettingsFragment : Fragment() {
 
         binding.resetButton.setOnClickListener {
             viewModel.onResetClicked()
+        }
+
+        binding.imageIndustryClear.setOnClickListener {
+            viewModel.onIndustryCleared()
         }
     }
 
@@ -89,11 +112,17 @@ class FilterSettingsFragment : Fragment() {
                 selectedIndustryText.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.black)
                 )
+                industryHint.isVisible = true
+                imageIndustryClear.isVisible = true
+                imageIndustry.isVisible = false
             } else {
                 selectedIndustryText.text = getString(R.string.hint_industry)
                 selectedIndustryText.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.gray)
                 )
+                industryHint.isVisible = false
+                imageIndustryClear.isVisible = false
+                imageIndustry.isVisible = true
             }
 
             checkOnlyWithSalary.isChecked = state.onlyWithSalary
