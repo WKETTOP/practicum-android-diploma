@@ -63,11 +63,7 @@ class FilterSettingsFragment : Fragment() {
 
         binding.industryButton.setOnClickListener {
             findNavController().navigate(
-                R.id.action_settingsFilterFragment2_to_choosingIndustryFragment,
-                null,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.settingsFilterFragment2, true)
-                    .build()
+                R.id.action_settingsFilterFragment2_to_choosingIndustryFragment
             )
         }
 

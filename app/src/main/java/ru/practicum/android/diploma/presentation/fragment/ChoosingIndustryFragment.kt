@@ -63,7 +63,9 @@ class ChoosingIndustryFragment : Fragment() {
         }
 
         binding.settingsFilterToolbar.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(
+                R.id.action_choosingIndustryFragment_to_settingsFilterFragment2
+            )
         }
 
         binding.searchInputText.addTextChangedListener { editable ->
@@ -99,14 +101,10 @@ class ChoosingIndustryFragment : Fragment() {
 
     private fun navigateToFilter(industry: FilterIndustry) {
         val args = bundleOf(KEY_ID to industry.id, KEY_NAME to industry.name)
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.choosingIndustryFragment, true)
-            .build()
 
         findNavController().navigate(
             R.id.action_choosingIndustryFragment_to_settingsFilterFragment2,
-            args,
-            navOptions
+            args
         )
     }
 
