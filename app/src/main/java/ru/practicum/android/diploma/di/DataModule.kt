@@ -12,9 +12,7 @@ import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.data.network.VacanciesApi
-import ru.practicum.android.diploma.data.repository.ResourceProviderImpl
 import ru.practicum.android.diploma.data.storage.FilterStorage
-import ru.practicum.android.diploma.domain.repository.ResourceProvider
 
 val dataModule = module {
     single<VacanciesApi> {
@@ -40,10 +38,6 @@ val dataModule = module {
         RetrofitNetworkClient(androidContext())
     }
 
-    single<ResourceProvider> {
-        ResourceProviderImpl(androidContext())
-    }
-
     single<SharedPreferences> {
         androidContext().getSharedPreferences("filter_preferences", Context.MODE_PRIVATE)
     }
@@ -53,6 +47,6 @@ val dataModule = module {
     }
 
     single {
-        FilterStorage(get(), get())
+        FilterStorage(get())
     }
 }

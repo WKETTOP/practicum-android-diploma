@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
@@ -51,25 +50,39 @@ class ChoosingIndustryFragment : Fragment() {
     }
 
     private fun setupUi() {
-        binding.applyButton.setOnClickListener {
-            viewModel.selectedIndustry.value?.let { industry ->
-                navigateToFilter(industry)
+        with(binding) {
+            applyButton.setOnClickListener {
+                viewModel.selectedIndustry.value?.let { industry ->
+                    navigateToFilter(industry)
+                }
             }
-        }
 
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = adapterIndustry
-        }
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = adapterIndustry
+            }
 
-        binding.settingsFilterToolbar.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_choosingIndustryFragment_to_settingsFilterFragment2
-            )
-        }
+            settingsFilterToolbar.setOnClickListener {
+                findNavController().navigate(
+                    R.id.action_choosingIndustryFragment_to_settingsFilterFragment2
+                )
+            }
 
-        binding.searchInputText.addTextChangedListener { editable ->
-            viewModel.setSearchQuery(editable.toString())
+            searchInputText.addTextChangedListener { editable ->
+                if (editable.isNullOrEmpty()) {
+                    searchClearButton.setImageResource(R.drawable.ic_search_24)
+                    searchClearButton.isEnabled = false
+                } else {
+                    searchClearButton.setImageResource(R.drawable.ic_close_24)
+                    searchClearButton.isEnabled = true
+                }
+                viewModel.setSearchQuery(editable.toString())
+            }
+
+            searchClearButton.setOnClickListener {
+                searchInputText.text?.clear()
+                viewModel.setSearchQuery("")
+            }
         }
     }
 
@@ -92,7 +105,15 @@ class ChoosingIndustryFragment : Fragment() {
                 }
                 launch {
                     viewModel.isSelectButtonVisible.collect { visible ->
-                        binding.applyButton.visibility = if (visible) View.VISIBLE else View.GONE
+                        binding.applyButton.isVisible = visible
+                    }
+                }
+                launch {
+                    viewModel.searchQuery.collect { query ->
+                        if (binding.searchInputText.text.toString() != query) {
+                            binding.searchInputText.setText(query)
+                            binding.searchInputText.setSelection(query.length)
+                        }
                     }
                 }
             }
@@ -120,6 +141,7 @@ class ChoosingIndustryFragment : Fragment() {
                         showNoInternetError()
                     }
                 }
+
                 ErrorType.SERVER_ERROR -> showServerError()
                 else -> showServerError()
             }

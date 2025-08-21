@@ -10,12 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.interactor.FilterSettingsInteractor
 import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.domain.usecase.GetIndustriesUseCase
 
 class ChoosingIndustryViewModel(
-    private val getIndustriesUseCase: GetIndustriesUseCase
+    private val getIndustriesUseCase: GetIndustriesUseCase,
+    private val filterSettingsInteractor: FilterSettingsInteractor
 ) : ViewModel() {
 
     private val _industryState = MutableLiveData<Resource<List<FilterIndustry>>>()
@@ -36,6 +38,9 @@ class ChoosingIndustryViewModel(
 
     init {
         viewModelScope.launch {
+            val currentFilter = filterSettingsInteractor.getFilterParameters()
+            _selectedIndustry.value = currentFilter.industry
+
             loadIndustries()
         }
     }
@@ -54,7 +59,8 @@ class ChoosingIndustryViewModel(
             _industryState.value = Resource.Loading()
             _industryState.value = getIndustriesUseCase().also { resource ->
                 if (resource is Resource.Success) {
-                    _filteredIndustries.value = resource.data!!
+                    _allIndustries.value = resource.data!!
+                    applyFilter()
                 }
             }
         }
@@ -62,10 +68,16 @@ class ChoosingIndustryViewModel(
 
     private fun applyFilter() {
         val query = _searchQuery.value
+        val allIndustries = _allIndustries.value
+
+        if (allIndustries.isEmpty()) {
+            return
+        }
+
         _filteredIndustries.value = if (query.isBlank()) {
-            _allIndustries.value
+            allIndustries
         } else {
-            _allIndustries.value.filter { it.name.contains(query, ignoreCase = true) }
+            allIndustries.filter { it.name.contains(query, ignoreCase = true) }
         }
     }
 }
