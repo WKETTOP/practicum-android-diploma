@@ -9,7 +9,9 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -121,30 +123,43 @@ class MainFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                handleUiState(state)
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.searchQuery.collect { query ->
-                if (binding.searchInputText.text.toString() != query) {
-                    binding.searchInputText.setText(query)
-                    binding.searchInputText.setSelection(query.length)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.uiState.collect { state ->
+                        handleUiState(state)
+                    }
                 }
-                updateClearButtonVisibility(query)
-            }
-        }
+                launch {
+                    viewModel.searchQuery.collect { query ->
+                        if (binding.searchInputText.text.toString() != query) {
+                            binding.searchInputText.setText(query)
+                            binding.searchInputText.setSelection(query.length)
+                        }
+                        updateClearButtonVisibility(query)
+                    }
+                }
+                launch {
+                    viewModel.toastMessage.collect { errorType ->
+                        errorType?.let {
+                            val message = when (it) {
+                                ErrorType.NO_INTERNET -> getString(R.string.error_no_internet)
+                                ErrorType.SERVER_ERROR -> getString(R.string.error_server)
+                                ErrorType.DATA_FORMAT_ERROR -> getString(R.string.error_data_format)
+                                ErrorType.NOT_FOUND -> getString(R.string.error_vacancy_not_found)
+                                ErrorType.EMPTY_RESPONSE -> getString(R.string.error_response_empty)
+                                ErrorType.UNKNOWN -> getString(R.string.error_unnown)
+                            }
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.toastMessage.collect { msg ->
-                msg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.hasActiveFilters.collect { hasFilters ->
-                updateFilterButtonState(hasFilters)
+                            viewModel.clearToastMessage()
+                        }
+                    }
+                }
+                launch {
+                    viewModel.hasActiveFilters.collect { hasFilters ->
+                        updateFilterButtonState(hasFilters)
+                    }
+                }
             }
         }
     }
@@ -235,10 +250,12 @@ class MainFragment : Fragment() {
                     R.drawable.no_internet_placeholder,
                     R.string.placeholder_no_internet
                 )
+
                 ErrorType.SERVER_ERROR -> Pair(
                     R.drawable.server_error_placeholder,
                     R.string.placeholder_server_error
                 )
+
                 else -> Pair(
                     R.drawable.not_find_vacancy_placeholder,
                     R.string.placeholder_unable_to_retrieve_job_listing

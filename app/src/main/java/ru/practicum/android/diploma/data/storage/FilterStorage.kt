@@ -1,50 +1,57 @@
 package ru.practicum.android.diploma.data.storage
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
 class FilterStorage(
-    private val sharedPreferences: SharedPreferences,
-    private val gson: Gson
+    private val sharedPreferences: SharedPreferences
 ) {
 
     fun saveFilterParameters(parameters: FilterParameters) {
-        val json = gson.toJson(parameters)
         sharedPreferences.edit {
-            putString(FILTER_PARAMETERS_KEY, json)
+            if (parameters.industry != null) {
+                putInt(INDUSTRY_ID_KEY, parameters.industry.id)
+                putString(INDUSTRY_NAME_KEY, parameters.industry.name)
+            } else {
+                remove(INDUSTRY_ID_KEY)
+                remove(INDUSTRY_NAME_KEY)
+            }
+
+            putBoolean(ONLY_WITH_SALARY_KEY, parameters.onlyWithSalary)
         }
     }
 
     fun getFilterParameters(): FilterParameters {
-        val json = sharedPreferences.getString(FILTER_PARAMETERS_KEY, null)
-        return if (json != null) {
-            try {
-                gson.fromJson(json, FilterParameters::class.java)
-            } catch (e: JsonSyntaxException) {
-                Log.w(TAG, "Invalid JSON format in filter parameters: ${e.message}")
-                clearFilterParameters()
-                FilterParameters()
-            } catch (e: IllegalStateException) {
-                Log.w(TAG, "Gson state error while parsing filter parameters: ${e.message}")
-                FilterParameters()
-            }
+        val industryId = sharedPreferences.getInt(INDUSTRY_ID_KEY, -1)
+        val industryName = sharedPreferences.getString(INDUSTRY_NAME_KEY, null)
+
+        val industry = if (industryId != -1 && industryName != null) {
+            FilterIndustry(industryId, industryName)
         } else {
-            FilterParameters()
+            null
         }
+
+        val onlyWithSalary = sharedPreferences.getBoolean(ONLY_WITH_SALARY_KEY, false)
+
+        return FilterParameters(
+            industry = industry,
+            onlyWithSalary = onlyWithSalary
+        )
     }
 
     fun clearFilterParameters() {
         sharedPreferences.edit {
-            remove(FILTER_PARAMETERS_KEY)
+            remove(INDUSTRY_ID_KEY)
+            remove(INDUSTRY_NAME_KEY)
+            remove(ONLY_WITH_SALARY_KEY)
         }
     }
 
     companion object {
-        private const val FILTER_PARAMETERS_KEY = "filter_parameters"
-        private const val TAG = "FilterStorage"
+        private const val INDUSTRY_ID_KEY = "industry_id"
+        private const val INDUSTRY_NAME_KEY = "industry_name"
+        private const val ONLY_WITH_SALARY_KEY = "only_with_salary"
     }
 }
