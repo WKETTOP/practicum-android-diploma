@@ -1,4 +1,8 @@
 package ru.practicum.android.diploma.di
+
+import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -6,10 +10,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.network.NetworkClient
-import ru.practicum.android.diploma.data.network.ResourceProvider
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.data.network.VacanciesApi
 import ru.practicum.android.diploma.data.repository.ResourceProviderImpl
+import ru.practicum.android.diploma.data.storage.FilterStorage
+import ru.practicum.android.diploma.domain.repository.ResourceProvider
 
 val dataModule = module {
     single<VacanciesApi> {
@@ -37,5 +42,17 @@ val dataModule = module {
 
     single<ResourceProvider> {
         ResourceProviderImpl(androidContext())
+    }
+
+    single<SharedPreferences> {
+        androidContext().getSharedPreferences("filter_preferences", Context.MODE_PRIVATE)
+    }
+
+    single {
+        Gson()
+    }
+
+    single {
+        FilterStorage(get(), get())
     }
 }

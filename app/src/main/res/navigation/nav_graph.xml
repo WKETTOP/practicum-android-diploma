@@ -49,7 +49,17 @@
         android:id="@+id/choosingIndustryFragment"
         android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingIndustryFragment"
         android:label="fragment_choosing_industry"
-        tools:layout="@layout/fragment_choosing_industry" />
+        tools:layout="@layout/fragment_choosing_industry">
+        <action
+            android:id="@+id/action_choosingIndustryFragment_to_settingsFilterFragment2"
+            app:destination="@id/settingsFilterFragment2"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/choosingIndustryFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/choosingRegionFragment"
         android:name="ru.practicum.android.diploma.presentation.fragment.ChoosingRegionFragment"
@@ -77,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFilterFragment2"
-        android:name="ru.practicum.android.diploma.presentation.fragment.SettingsFilterFragment"
+        android:name="ru.practicum.android.diploma.presentation.fragment.FilterSettingsFragment"
         android:label="fragment_settings_filter"
         tools:layout="@layout/fragment_settings_filter">
         <action
@@ -86,7 +96,9 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/hold"
             app:popEnterAnim="@anim/hold"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/settingsFilterFragment2"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_settingsFilterFragment2_to_choosingPlaceWorkFragment2"
             app:destination="@id/choosingPlaceWorkFragment2"

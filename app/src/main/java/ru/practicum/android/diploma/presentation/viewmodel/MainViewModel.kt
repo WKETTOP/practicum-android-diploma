@@ -8,19 +8,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.interactor.FilterSettingsInteractor
+import ru.practicum.android.diploma.domain.models.ErrorType
 import ru.practicum.android.diploma.domain.models.Resource
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.models.VacancyResponse
+import ru.practicum.android.diploma.domain.repository.ResourceProvider
 import ru.practicum.android.diploma.domain.usecase.GetVacanciesUseCase
 import ru.practicum.android.diploma.presentation.model.VacancySearchUiState
 import ru.practicum.android.diploma.util.debounce
 
 class MainViewModel(
-    private val getVacanciesUseCase: GetVacanciesUseCase
+    private val resourceProvider: ResourceProvider,
+    private val getVacanciesUseCase: GetVacanciesUseCase,
+    private val filterSettingsInteractor: FilterSettingsInteractor
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Idle)
+    private val _uiState = MutableStateFlow<VacancySearchUiState>(VacancySearchUiState.Idle)
     val uiState: StateFlow<VacancySearchUiState> = _uiState
 
     private var _searchQuery = MutableStateFlow("")
@@ -29,7 +35,11 @@ class MainViewModel(
     private val _toastMessage = MutableSharedFlow<String?>(replay = 1)
     val toastMessage: SharedFlow<String?> = _toastMessage
 
+    private val _hasActiveFilters = MutableStateFlow(false)
+    val hasActiveFilters: StateFlow<Boolean> = _hasActiveFilters
+
     private var currentJob: Job? = null
+    private var cachedUiState: VacancySearchUiState? = null
 
     private var currentPage = 1
     private var totalPages = 1
@@ -40,6 +50,10 @@ class MainViewModel(
 
     private var cachedVacancyResponse: VacancyResponse? = null
 
+    init {
+        updateFilterState()
+    }
+
     private val debouncedSearch = debounce<String>(
         delayMillis = SEARCH_DEBOUNCE,
         coroutineScope = viewModelScope,
@@ -49,7 +63,7 @@ class MainViewModel(
     }
 
     fun onSearchQueryChanged(query: String) {
-        if (query == lastQuery) return
+        if (query == lastQuery && !hasActiveFilters()) return
 
         _searchQuery.value = query
 
@@ -57,6 +71,7 @@ class MainViewModel(
             currentJob?.cancel()
             _uiState.value = VacancySearchUiState.Idle
             cachedVacancyResponse = null
+            cachedUiState = null
         } else {
             debouncedSearch(query)
         }
@@ -66,6 +81,7 @@ class MainViewModel(
         _searchQuery.value = ""
         currentJob?.cancel()
         _uiState.value = VacancySearchUiState.Idle
+        cachedUiState = null
     }
 
     private fun performSearch(query: String, page: Int = 1) {
@@ -74,6 +90,8 @@ class MainViewModel(
 
         setupInitialState(page)
         lastQuery = query
+
+        updateFilterState()
 
         currentJob = viewModelScope.launch {
             val params = createSearchParams(query, page)
@@ -84,6 +102,10 @@ class MainViewModel(
                 cachedVacancyResponse = createContentResponse(result.data!!)
             }
         }
+    }
+
+    private fun updateFilterState() {
+        _hasActiveFilters.value = filterSettingsInteractor.hasActiveFilters()
     }
 
     private fun setupInitialState(page: Int) {
@@ -99,20 +121,22 @@ class MainViewModel(
     }
 
     private fun createSearchParams(query: String, page: Int): SearchParams {
+        val filterParameters = filterSettingsInteractor.getFilterParameters()
+
         return SearchParams(
             area = null,
-            industry = null,
+            industry = filterParameters.industry?.id,
             text = query,
             salary = null,
             page = page,
-            onlyWithSalary = false
+            onlyWithSalary = filterParameters.onlyWithSalary
         )
     }
 
     private fun handleSearchResult(result: Resource<VacancyResponse>, page: Int) {
         when (result) {
             is Resource.Success -> handleSuccess(result.data, page)
-            is Resource.Error -> handleError(result.message, page)
+            is Resource.Error -> handleError(result.errorType ?: ErrorType.UNKNOWN, page)
             else -> Unit
         }
         isLoadingNextPage = false
@@ -121,17 +145,25 @@ class MainViewModel(
 
     private fun handleSuccess(data: VacancyResponse?, page: Int) {
         if (data == null) {
-            _uiState.value = VacancySearchUiState.Error("Ошибка сервера")
+            val errorState = VacancySearchUiState.Error(errorType = ErrorType.EMPTY_RESPONSE)
+            _uiState.value = errorState
+            cachedUiState = errorState
             return
         }
 
         updatePaginationData(data, page)
         updateVacanciesList(data.vacancies)
 
-        _uiState.value = if (vacanciesList.isNotEmpty()) {
+        val newState = if (vacanciesList.isNotEmpty()) {
             VacancySearchUiState.Content(createContentResponse(data))
         } else {
             VacancySearchUiState.Empty
+        }
+
+        _uiState.value = newState
+
+        if (page == 1) {
+            cachedUiState = newState
         }
     }
 
@@ -157,15 +189,19 @@ class MainViewModel(
         )
     }
 
-    private fun handleError(message: String?, page: Int) {
-        viewModelScope.launch {
-            _toastMessage.emit(getErrorMessage(message))
+    private fun handleError(type: ErrorType, page: Int) {
+        viewModelScope.launch { _toastMessage.emit(getErrorMessage(type)) }
+
+        val newState = if (page > 1) {
+            VacancySearchUiState.Content(createVacancyResponse())
+        } else {
+            VacancySearchUiState.Error(type)
         }
 
-        if (page > 1) {
-            _uiState.value = VacancySearchUiState.Content(createVacancyResponse())
-        } else {
-            _uiState.value = VacancySearchUiState.Error(message)
+        _uiState.value = newState
+
+        if (page == 1) {
+            cachedUiState = newState
         }
     }
 
@@ -178,10 +214,14 @@ class MainViewModel(
         )
     }
 
-    private fun getErrorMessage(message: String?): String {
-        return when (message) {
-            "Нет подключения к интернету" -> "Проверьте подключение к интернету"
-            else -> "Произошла ошибка"
+    private fun getErrorMessage(type: ErrorType): String {
+        return when (type) {
+            ErrorType.NO_INTERNET -> resourceProvider.getString(R.string.error_no_internet)
+            ErrorType.SERVER_ERROR -> resourceProvider.getString(R.string.error_server)
+            ErrorType.DATA_FORMAT_ERROR -> resourceProvider.getString(R.string.error_data_format)
+            ErrorType.NOT_FOUND -> resourceProvider.getString(R.string.error_vacancy_not_found)
+            ErrorType.EMPTY_RESPONSE -> resourceProvider.getString(R.string.error_response_empty)
+            ErrorType.UNKNOWN -> resourceProvider.getString(R.string.error_unnown)
         }
     }
 
@@ -193,11 +233,15 @@ class MainViewModel(
     }
 
     fun loadInitialDataIfNeeded() {
-        if (cachedVacancyResponse != null) {
-            _uiState.value = VacancySearchUiState.Content(cachedVacancyResponse!!)
-        } else {
+        cachedUiState?.let { state ->
+            _uiState.value = state
+        } ?: run {
             _uiState.value = VacancySearchUiState.Idle
         }
+    }
+
+    fun hasActiveFilters(): Boolean {
+        return filterSettingsInteractor.hasActiveFilters()
     }
 
     companion object {
